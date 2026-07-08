@@ -214,23 +214,19 @@ button {
   overflow: hidden;
   pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(159, 126, 91, 0.08) 1px, transparent 1px) 0 0 / 86px 100%,
-    linear-gradient(180deg, transparent 0 58%, rgba(159, 126, 91, 0.16) 58% 59%, transparent 59%),
-    linear-gradient(180deg, rgba(255, 252, 246, 0.82), rgba(238, 222, 202, 0.9));
+    linear-gradient(90deg, rgba(255, 250, 239, 0.7) 0 28%, rgba(255, 250, 239, 0.2) 45%, rgba(255, 250, 239, 0.36) 100%),
+    linear-gradient(180deg, rgba(255, 248, 234, 0.42), rgba(246, 223, 180, 0.26)),
+    url("clinic-hero-scene.png") center center / cover no-repeat;
 }
 
 .hospital-backdrop::before {
   content: "";
   position: absolute;
-  left: 8vw;
-  right: 8vw;
-  bottom: 0;
-  height: 37vh;
+  inset: 0;
   background:
-    repeating-linear-gradient(90deg, rgba(142, 100, 63, 0.08) 0 2px, transparent 2px 64px),
-    linear-gradient(180deg, #e8d6bd, #d7bea0);
-  transform: perspective(520px) rotateX(62deg);
-  transform-origin: bottom center;
+    radial-gradient(circle at 72% 48%, rgba(255, 255, 255, 0.08), transparent 31%),
+    linear-gradient(90deg, rgba(255, 251, 242, 0.68), transparent 34%, rgba(116, 67, 25, 0.08));
+  animation: clinicSceneSettle 6.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .hospital-backdrop::after {
@@ -238,18 +234,39 @@ button {
   position: absolute;
   left: 0;
   right: 0;
-  top: 46vh;
-  height: 34px;
+  bottom: 0;
+  height: 28vh;
+  background: linear-gradient(180deg, transparent, rgba(105, 63, 31, 0.16));
+}
+
+.clinic-door-motion {
+  position: absolute;
+  left: clamp(86px, 18vw, 330px);
+  top: clamp(138px, 26vh, 260px);
+  width: clamp(72px, 8vw, 142px);
+  height: clamp(190px, 26vh, 330px);
+  border-radius: 4px 18px 18px 4px;
   background:
-    repeating-linear-gradient(
-      90deg,
-      #b97c4d 0 10px,
-      transparent 10px 28px
-    ),
-    linear-gradient(180deg, #d6a06c, #9b633f);
-  box-shadow:
-    0 -5px 0 rgba(118, 76, 45, 0.18),
-    0 10px 22px rgba(102, 64, 35, 0.16);
+    linear-gradient(90deg, rgba(55, 33, 18, 0.42), rgba(255, 220, 141, 0.12)),
+    linear-gradient(180deg, rgba(255, 242, 194, 0.3), rgba(86, 52, 25, 0.16));
+  transform-origin: left center;
+  animation: clinicDoorOpen 5.6s cubic-bezier(0.18, 0.9, 0.2, 1) 0.15s both;
+  mix-blend-mode: multiply;
+  opacity: 0.56;
+}
+
+.clinic-walk-glow {
+  position: absolute;
+  left: clamp(180px, 24vw, 440px);
+  bottom: 11vh;
+  width: min(58vw, 860px);
+  height: 22vh;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 10% 52%, rgba(255, 231, 174, 0.32), transparent 28%),
+    radial-gradient(ellipse at 52% 56%, rgba(255, 247, 225, 0.22), transparent 48%);
+  filter: blur(4px);
+  animation: clinicWalkLight 5.8s ease-out 0.35s both;
 }
 
 .pasture-scene {
@@ -893,8 +910,9 @@ button {
 .app-shell {
   min-height: 100vh;
   display: grid;
-  place-items: center;
+  place-items: center start;
   padding: 118px 18px 32px;
+  padding-left: clamp(18px, 5vw, 72px);
   position: relative;
   z-index: 1;
 }
@@ -2306,9 +2324,59 @@ h1 {
   }
 }
 
+@keyframes clinicSceneSettle {
+  0% {
+    opacity: 0.72;
+    transform: scale(1.08) translateX(-24px);
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+@keyframes clinicDoorOpen {
+  0% {
+    transform: perspective(420px) rotateY(0deg);
+    opacity: 0.66;
+  }
+  42% {
+    transform: perspective(420px) rotateY(-54deg);
+    opacity: 0.44;
+  }
+  100% {
+    transform: perspective(420px) rotateY(-78deg);
+    opacity: 0.22;
+  }
+}
+
+@keyframes clinicWalkLight {
+  0% {
+    transform: translateX(-18vw) scaleX(0.45);
+    opacity: 0;
+  }
+  28% {
+    opacity: 0.72;
+  }
+  100% {
+    transform: translateX(20vw) scaleX(1);
+    opacity: 0.18;
+  }
+}
+
 @media (max-width: 560px) {
   .app-shell {
+    place-items: center;
     padding: 104px 14px 24px;
+  }
+
+  .hospital-backdrop {
+    background:
+      linear-gradient(180deg, rgba(255, 250, 239, 0.42), rgba(246, 223, 180, 0.3)),
+      url("clinic-hero-scene.png") 47% center / cover no-repeat;
   }
 
   .hospital-sign {
@@ -2323,7 +2391,8 @@ h1 {
   }
 
   .hospital-backdrop::after {
-    top: 43vh;
+    top: auto;
+    bottom: 0;
   }
 
   .pasture-pig {
