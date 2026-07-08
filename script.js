@@ -28,6 +28,19 @@ const subtitle = document.querySelector(".subtitle");
 const hospitalSign = document.querySelector(".hospital-sign");
 const panelLabel = document.querySelector(".panel-top span");
 const resultTitle = document.querySelector("#resultTitle");
+const clinicNewsletterKicker = document.querySelector("#clinicNewsletterKicker");
+const clinicNewsletterTitle = document.querySelector("#clinicNewsletterTitle");
+const clinicNewsletterLead = document.querySelector("#clinicNewsletterLead");
+const clinicNewsletterBody1 = document.querySelector("#clinicNewsletterBody1");
+const clinicNewsletterBody2 = document.querySelector("#clinicNewsletterBody2");
+const clinicNewsletterBody3 = document.querySelector("#clinicNewsletterBody3");
+const clinicNewsletterBody4 = document.querySelector("#clinicNewsletterBody4");
+const clinicNewsletterBody5 = document.querySelector("#clinicNewsletterBody5");
+const clinicNewsletterBody6 = document.querySelector("#clinicNewsletterBody6");
+const clinicNewsletterBody7 = document.querySelector("#clinicNewsletterBody7");
+const clinicNewsletterItem1 = document.querySelector("#clinicNewsletterItem1");
+const clinicNewsletterItem2 = document.querySelector("#clinicNewsletterItem2");
+const clinicNewsletterItem3 = document.querySelector("#clinicNewsletterItem3");
 
 const supabaseUrl = "https://blkxiayxrjsjylmyvkvi.supabase.co";
 const supabaseAnonKey =
@@ -197,6 +210,39 @@ const newsletterText = {
   }
 };
 
+const clinicNewsletterText = {
+  ko: {
+    kicker: "Pigjano Clinic Letter",
+    title: "돼지자노 클리닉에 오신 것을 환영합니다.",
+    lead: '아직도 "내일부터 다이어트"를 외치고 계신가요?',
+    body1: "걱정하지 마세요. 저희는 나태함과 합리화에 익숙한 여러분을 위해 훈육 시스템을 준비했습니다.",
+    body2: '이메일을 입력하고 <strong>훈육받기</strong> 버튼을 눌러보세요.',
+    body3: "그러면 정기적으로",
+    item1: "다이어트 의지를 자극하는 한마디",
+    item2: "정신이 번쩍 드는 현실 직시 이미지",
+    item3: "다이어트에 도움이 되는 정보와 실천 팁",
+    body4: "우리는 살을 빼주는 곳이 아닙니다. <strong>핑계를 빼주는 곳입니다.</strong>",
+    body5: "오늘 등록하고, 내일의 나에게 핑계를 남기지 마세요.",
+    body6: "당신의 의지는 약해도, 우리의 메일은 꾸준합니다.",
+    body7: "지금 바로 이메일을 등록하고, 돼지자노의 훈육을 시작하세요."
+  },
+  en: {
+    kicker: "Pigjano Clinic Letter",
+    title: "Welcome to the Pigjano Clinic.",
+    lead: 'Still saying "I will diet tomorrow"?',
+    body1: "Do not worry. We built a discipline system for people who are very good at laziness and rationalizing one more bite.",
+    body2: 'Enter your email and press <strong>Join Discipline</strong>.',
+    body3: "We will regularly send you",
+    item1: "short diet discipline lines that hit at the right time",
+    item2: "reality-check images that wake you up",
+    item3: "practical tips that help you stay on track",
+    body4: "We are not here to remove your weight for you. <strong>We are here to remove your excuses.</strong>",
+    body5: "Register today, and do not leave tomorrow-you another excuse.",
+    body6: "Your willpower may be weak, but our emails are consistent.",
+    body7: "Enter your email now and start Pigjano discipline."
+  }
+};
+
 const updateText = {
   ko: {
     button: "\uC5C5\uB370\uC774\uD2B8",
@@ -322,6 +368,23 @@ function updateNewsletterLanguage() {
   }
 }
 
+function updateClinicNewsletterLanguage() {
+  const text = clinicNewsletterText[currentLang];
+  clinicNewsletterKicker.textContent = text.kicker;
+  clinicNewsletterTitle.textContent = text.title;
+  clinicNewsletterLead.textContent = text.lead;
+  clinicNewsletterBody1.textContent = text.body1;
+  clinicNewsletterBody2.innerHTML = text.body2;
+  clinicNewsletterBody3.textContent = text.body3;
+  clinicNewsletterItem1.textContent = text.item1;
+  clinicNewsletterItem2.textContent = text.item2;
+  clinicNewsletterItem3.textContent = text.item3;
+  clinicNewsletterBody4.innerHTML = text.body4;
+  clinicNewsletterBody5.textContent = text.body5;
+  clinicNewsletterBody6.textContent = text.body6;
+  clinicNewsletterBody7.textContent = text.body7;
+}
+
 function updateReleaseLanguage() {
   const text = updateText[currentLang];
   updateButton.textContent = text.button;
@@ -380,6 +443,7 @@ function setLanguage(lang) {
   saveImageButton.textContent = text.save;
   copyLinkButton.textContent = text.copy;
   updateNewsletterLanguage();
+  updateClinicNewsletterLanguage();
   updateReleaseLanguage();
   updateKakaoLanguage();
 
