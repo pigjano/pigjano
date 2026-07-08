@@ -835,12 +835,20 @@ button {
 
 .walk-in-pig {
   position: absolute;
-  left: 8vw;
-  bottom: 15vh;
-  width: 92px;
-  height: 132px;
+  left: 7vw;
+  bottom: 12vh;
+  width: 132px;
+  height: 190px;
+  background: url("pigjano-character.png") center bottom / contain no-repeat;
   transform-origin: bottom center;
   animation: walkToNurse 5.4s cubic-bezier(0.2, 0.8, 0.18, 1) 320ms both;
+  filter: drop-shadow(0 14px 16px rgba(62, 38, 18, 0.24));
+}
+
+.walk-in-pig .walk-ear,
+.walk-in-pig .walk-face,
+.walk-in-pig .walk-body {
+  display: none;
 }
 
 .walk-face {
@@ -1761,12 +1769,21 @@ h1 {
 
 .patient-pig {
   position: absolute;
-  right: 108px;
-  bottom: 88px;
-  width: 216px;
-  height: 104px;
-  transform: rotate(-5deg);
+  right: 92px;
+  bottom: 54px;
+  width: 156px;
+  height: 220px;
+  background: url("pigjano-character.png") center bottom / contain no-repeat;
+  filter: drop-shadow(0 12px 16px rgba(66, 37, 24, 0.2));
+  transform: rotate(-3deg);
   transform-origin: center bottom;
+}
+
+.patient-pig .patient-ear,
+.patient-pig .patient-face,
+.patient-pig .patient-body,
+.patient-pig .patient-leg {
+  display: none;
 }
 
 .patient-body {
@@ -2498,9 +2515,11 @@ h1 {
   }
 
   .patient-pig {
-    right: 54px;
-    bottom: 82px;
-    transform: rotate(-5deg) scale(0.76);
+    right: 42px;
+    bottom: 54px;
+    width: 118px;
+    height: 168px;
+    transform: rotate(-3deg) scale(0.82);
     transform-origin: right bottom;
   }
 

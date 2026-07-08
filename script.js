@@ -1353,7 +1353,7 @@ function getShareUrl() {
 }
 
 function getShareImageUrl() {
-  return `${siteUrl}/share-${currentDose.replace(".", "-")}.png?v=20260708-4`;
+  return `${siteUrl}/share-${currentDose.replace(".", "-")}.png?v=20260708-5`;
 }
 
 function setDose(dose, updateUrl = false) {
@@ -1616,13 +1616,29 @@ function drawPig(ctx, x, y, mood = "soft") {
   ctx.fill();
 }
 
-function saveResultImage() {
+function loadImageAsset(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+    image.src = src;
+  });
+}
+
+async function saveResultImage() {
   const canvas = document.createElement("canvas");
   canvas.width = 1080;
   canvas.height = 1080;
   const ctx = canvas.getContext("2d");
   const message = currentMessage || getRandomMessage(currentDose);
   const mood = getMood(currentDose);
+  let mascotImage = null;
+
+  try {
+    mascotImage = await loadImageAsset("pigjano-character.png");
+  } catch (error) {
+    mascotImage = null;
+  }
 
   const gradient = ctx.createLinearGradient(0, 0, 1080, 1080);
   gradient.addColorStop(0, "#20242d");
@@ -1653,19 +1669,29 @@ function saveResultImage() {
   ctx.font = "800 54px Pretendard, Arial, sans-serif";
   ctx.fillText(`${currentDose}mg`, 540, 294);
 
-  drawPig(ctx, 340, 470, mood);
+  if (mascotImage) {
+    ctx.drawImage(mascotImage, 250, 335, 250, 300);
+  } else {
+    drawPig(ctx, 340, 470, mood);
+  }
 
   ctx.strokeStyle = "#f8fafc";
   ctx.lineWidth = 16;
   ctx.lineCap = "round";
   ctx.beginPath();
-  ctx.moveTo(398, 488);
+  ctx.moveTo(455, 492);
   ctx.lineTo(650, 488);
   ctx.stroke();
 
   ctx.fillStyle = "#42d4b8";
   drawRoundRect(ctx, 430, 458, 164, 60, 18);
   ctx.fill();
+
+  ctx.strokeStyle = "#b80a2c";
+  ctx.lineWidth = 7;
+  ctx.beginPath();
+  ctx.ellipse(438, 505, 28, 18, 0, 0, Math.PI * 2);
+  ctx.stroke();
 
   ctx.fillStyle = "#fff0dc";
   ctx.beginPath();
