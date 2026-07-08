@@ -1633,6 +1633,62 @@ h1 {
     linear-gradient(145deg, #38262c, #171216);
 }
 
+.result-scene .doctor-pig {
+  display: none;
+}
+
+.result-character {
+  position: absolute;
+  z-index: 4;
+  display: block;
+  object-fit: contain;
+  object-position: center bottom;
+  user-select: none;
+  pointer-events: none;
+  filter:
+    drop-shadow(0 18px 18px rgba(0, 0, 0, 0.34))
+    drop-shadow(0 0 18px rgba(255, 255, 255, 0.08));
+}
+
+.result-nurse-luna {
+  left: 38px;
+  bottom: 16px;
+  width: 132px;
+  height: 210px;
+  animation: nurseLunaInject 1.35s ease-in-out both;
+}
+
+.result-bear-doctor {
+  left: 2px;
+  bottom: 18px;
+  z-index: 3;
+  width: 112px;
+  height: 190px;
+  opacity: 0.98;
+  animation: bearDoctorObserve 1.35s ease-in-out both;
+}
+
+.result-scene[data-mood="firm"] .result-nurse-luna {
+  animation-name: nurseLunaInjectFirm;
+}
+
+.result-scene[data-mood="hard"] .result-nurse-luna {
+  animation-name: nurseLunaInjectHard;
+}
+
+.result-scene[data-mood="severe"] .result-nurse-luna,
+.result-scene[data-mood="max"] .result-nurse-luna {
+  animation-name: nurseLunaInjectSevere;
+}
+
+.result-scene[data-mood="hard"] .result-bear-doctor,
+.result-scene[data-mood="severe"] .result-bear-doctor,
+.result-scene[data-mood="max"] .result-bear-doctor {
+  filter:
+    drop-shadow(0 18px 18px rgba(0, 0, 0, 0.38))
+    drop-shadow(0 0 18px rgba(255, 111, 95, 0.18));
+}
+
 .person {
   position: absolute;
   left: 52%;
@@ -2273,6 +2329,100 @@ h1 {
   }
 }
 
+@keyframes bearDoctorObserve {
+  0% {
+    transform: translateX(-10px) scale(0.96);
+    opacity: 0;
+  }
+  28% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 0.98;
+  }
+}
+
+@keyframes nurseLunaInject {
+  0% {
+    transform: translateX(-18px) rotate(-2deg) scale(0.96);
+    opacity: 0;
+  }
+  28% {
+    opacity: 1;
+  }
+  54% {
+    transform: translateX(18px) rotate(1deg) scale(1);
+  }
+  72% {
+    transform: translateX(10px) rotate(-1deg) scale(1);
+  }
+  100% {
+    transform: translateX(14px) rotate(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes nurseLunaInjectFirm {
+  0% {
+    transform: translateX(-22px) rotate(-3deg) scale(0.96);
+    opacity: 0;
+  }
+  26% {
+    opacity: 1;
+  }
+  52% {
+    transform: translateX(24px) rotate(2deg) scale(1.02);
+  }
+  72% {
+    transform: translateX(12px) rotate(-1deg) scale(1);
+  }
+  100% {
+    transform: translateX(18px) rotate(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes nurseLunaInjectHard {
+  0% {
+    transform: translateX(-26px) rotate(-4deg) scale(0.98);
+    opacity: 0;
+  }
+  24% {
+    opacity: 1;
+  }
+  48% {
+    transform: translateX(32px) rotate(3deg) scale(1.04);
+  }
+  64% {
+    transform: translateX(14px) rotate(-2deg) scale(1.02);
+  }
+  100% {
+    transform: translateX(24px) rotate(0) scale(1.02);
+    opacity: 1;
+  }
+}
+
+@keyframes nurseLunaInjectSevere {
+  0% {
+    transform: translateX(-30px) rotate(-5deg) scale(0.98);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  42% {
+    transform: translateX(42px) rotate(4deg) scale(1.06);
+  }
+  58% {
+    transform: translateX(16px) rotate(-2deg) scale(1.03);
+  }
+  100% {
+    transform: translateX(30px) rotate(0) scale(1.04);
+    opacity: 1;
+  }
+}
+
 @keyframes injectMove {
   0% {
     transform: translateX(-34px) rotate(-6deg);
@@ -2804,6 +2954,21 @@ h1 {
     left: 10px;
     bottom: 20px;
     transform-origin: bottom left;
+  }
+
+  .result-nurse-luna {
+    left: 18px;
+    bottom: 16px;
+    width: 92px;
+    height: 168px;
+  }
+
+  .result-bear-doctor {
+    left: -12px;
+    bottom: 18px;
+    width: 82px;
+    height: 148px;
+    opacity: 0.9;
   }
 
   .motion-syringe {
