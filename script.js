@@ -91,7 +91,7 @@ const extraMessages = {
   ]
 };
 
-const userMessages = {};
+const userMessages = window.PIGJANO_MESSAGES || {};
 
 const englishMessages = {
   "1": [
@@ -226,15 +226,71 @@ const kakaoText = {
 let currentDose = "1";
 let currentMessage = messages["1"];
 let currentLang = localStorage.getItem("pigjanoLang") || "ko";
+const messageDecks = new Map();
+const recentMessageHistory = new Map();
+const lastMessageKey = new Map();
+const recentMessageLimit = 36;
 
 function getMessageList(dose) {
   if (currentLang === "en") return englishMessages[dose] || englishMessages["1"];
   return [messages[dose], ...(extraMessages[dose] || []), ...(userMessages[dose] || [])].filter(Boolean);
 }
 
-function getRandomMessage(dose) {
+function shuffleList(list) {
+  const shuffled = [...list];
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+  }
+
+  return shuffled;
+}
+
+function getMessageKey(message) {
+  return message.split(/[.!?。]/)[0].trim();
+}
+
+function getDeckKey(dose) {
+  return `${currentLang}:${dose}`;
+}
+
+function rebuildMessageDeck(dose) {
+  const deckKey = getDeckKey(dose);
+  const recent = recentMessageHistory.get(deckKey) || [];
   const list = getMessageList(dose);
-  return list[Math.floor(Math.random() * list.length)];
+  const freshList = list.filter((message) => !recent.includes(message));
+  const source = freshList.length >= Math.min(20, list.length) ? freshList : list;
+  const deck = shuffleList(source);
+  messageDecks.set(deckKey, deck);
+  return deck;
+}
+
+function getRandomMessage(dose) {
+  const deckKey = getDeckKey(dose);
+  let deck = messageDecks.get(deckKey);
+
+  if (!deck || deck.length === 0) {
+    deck = rebuildMessageDeck(dose);
+  }
+
+  const previousKey = lastMessageKey.get(deckKey);
+
+  if (previousKey && deck.length > 1) {
+    const differentIndex = deck.findIndex((message) => getMessageKey(message) !== previousKey);
+
+    if (differentIndex > 0) {
+      [deck[0], deck[differentIndex]] = [deck[differentIndex], deck[0]];
+    }
+  }
+
+  const message = deck.shift();
+  const recent = recentMessageHistory.get(deckKey) || [];
+  recent.unshift(message);
+  recentMessageHistory.set(deckKey, recent.slice(0, recentMessageLimit));
+  lastMessageKey.set(deckKey, getMessageKey(message));
+
+  return message;
 }
 
 function getMood(dose) {
