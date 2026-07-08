@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>&#46076;&#51648;&#51088;&#45432;</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <button class="language-toggle" id="languageToggle" type="button">English</button>
+
+    <form class="newsletter-signup" id="newsletterForm">
+      <label class="sr-only" for="newsletterEmail">&#51060;&#47700;&#51068; &#44396;&#46021;</label>
+      <input id="newsletterEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="&#51060;&#47700;&#51068; &#44396;&#46021;" required />
+      <button id="newsletterButton" type="submit">&#44396;&#46021;</button>
+      <p id="newsletterStatus" aria-live="polite"></p>
+    </form>
+
+    <a class="instagram-link" href="https://www.instagram.com/pigjano/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+      <span></span>
+    </a>
+
+    <div class="hospital-backdrop" aria-hidden="true">
+      <div class="hospital-sign">&#46076;&#51648;&#54984;&#50977;&#49548;</div>
+      <div class="pasture-scene">
+        <span class="pasture-pig pig-a"><i></i></span>
+        <span class="pasture-pig pig-b grumpy"><i></i></span>
+        <span class="pasture-pig pig-c eating"><i></i><b></b></span>
+        <span class="pasture-pig pig-d"><i></i></span>
+        <span class="pasture-pig pig-e grumpy"><i></i></span>
+        <span class="pasture-pig pig-f eating"><i></i><b></b></span>
+        <span class="pasture-pig pig-g"><i></i></span>
+        <span class="pasture-pig pig-h grumpy"><i></i></span>
+        <span class="campfire fire-a"></span>
+        <span class="campfire fire-b"></span>
+      </div>
+      <div class="reception-desk">
+        <span class="desk-nurse"></span>
+      </div>
+      <div class="drill-pig devil-coach">
+        <span class="coach-ear left"></span>
+        <span class="coach-ear right"></span>
+        <span class="coach-face"></span>
+        <span class="coach-body"></span>
+        <span class="coach-baton"></span>
+      </div>
+      <div class="drill-pig nurse-coach">
+        <span class="coach-ear left"></span>
+        <span class="coach-ear right"></span>
+        <span class="coach-face"></span>
+        <span class="coach-hat"></span>
+        <span class="coach-body"></span>
+        <span class="coach-syringe"></span>
+      </div>
+      <div class="waiting-row">
+        <span class="waiting-chair"><i></i></span>
+        <span class="waiting-chair"><i></i></span>
+        <span class="waiting-chair"><i></i></span>
+      </div>
+      <div class="walk-in-pig">
+        <span class="walk-ear left"></span>
+        <span class="walk-ear right"></span>
+        <span class="walk-face"></span>
+        <span class="walk-body"></span>
+      </div>
+    </div>
+
+    <main class="app-shell">
+      <section class="hero" aria-labelledby="app-title">
+        <div class="brand-row">
+          <span class="dose-dot" aria-hidden="true"></span>
+          <span>Diet Injection Console</span>
+          <button class="update-button" id="updateButton" type="button">&#50629;&#45936;&#51060;&#53944;</button>
+        </div>
+
+        <h1 id="app-title">&#46076;&#51648;&#51088;&#45432;</h1>
+        <p class="subtitle">&#50896;&#54616;&#45716; &#51088;&#44537; &#50857;&#47049;&#51012; &#44256;&#47476;&#44256; &#51452;&#51077;&#54616;&#49464;&#50836;.</p>
+
+        <div class="injector-wrap" aria-hidden="true">
+          <div class="injector">
+            <div class="plunger"></div>
+            <div class="barrel">
+              <div class="liquid"></div>
+              <div class="ticks">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <div class="needle"></div>
+            <div class="pig-charm">
+              <span class="pig-ear left"></span>
+              <span class="pig-ear right"></span>
+              <span class="pig-eye left"></span>
+              <span class="pig-eye right"></span>
+              <span class="pig-nose"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dosage-panel">
+          <div class="panel-top">
+            <span>&#50857;&#47049; &#49440;&#53469;</span>
+            <strong id="selectedDose">1mg</strong>
+          </div>
+
+          <div class="dose-grid" id="doseGrid" aria-label="&#51088;&#44537; &#50857;&#47049; &#49440;&#53469;">
+            <button class="dose-button active" type="button" data-dose="1">1mg</button>
+            <button class="dose-button" type="button" data-dose="2.5">2.5mg</button>
+            <button class="dose-button" type="button" data-dose="7.5">7.5mg</button>
+            <button class="dose-button" type="button" data-dose="9">9mg</button>
+            <button class="dose-button" type="button" data-dose="11">11mg</button>
+            <button class="dose-button" type="button" data-dose="13">13mg</button>
+            <button class="dose-button" type="button" data-dose="15">15mg</button>
+            <button class="dose-button" type="button" data-dose="17">17mg</button>
+            <button class="dose-button" type="button" data-dose="19">19mg</button>
+            <button class="dose-button" type="button" data-dose="20">20mg</button>
+          </div>
+
+          <button class="inject-button" id="injectButton" type="button">
+            <span class="button-icon" aria-hidden="true">+</span>
+            &#51452;&#51077;&#54616;&#44592;
+          </button>
+        </div>
+
+        <output class="message-box" id="messageBox" aria-live="polite">
+          &#50857;&#47049;&#51012; &#44256;&#47476;&#44256; &#51452;&#51077;&#54616;&#44592;&#47484; &#45572;&#47476;&#47732; &#44208;&#44284; &#52285;&#51060; &#50676;&#47549;&#45768;&#45796;.
+        </output>
+      </section>
+    </main>
+
+    <section class="update-modal" id="updateModal" hidden aria-labelledby="updateTitle" aria-modal="true" role="dialog">
+      <div class="update-card">
+        <button class="close-button" id="closeUpdateModal" type="button" aria-label="&#50629;&#45936;&#51060;&#53944; &#52285; &#45803;&#44592;">&#215;</button>
+        <span class="update-kicker">Pigjano Release Note</span>
+        <h2 id="updateTitle">&#50629;&#45936;&#51060;&#53944; &#45236;&#50669;</h2>
+        <ol class="update-list">
+          <li>
+            <time datetime="2026-07-05">2026.07.05</time>
+            <span>&#46076;&#51648;&#54984;&#50977;&#49548; &#49436;&#48708;&#49828; &#47088;&#52845;</span>
+          </li>
+          <li>
+            <time datetime="2026-07-07">2026.07.07</time>
+            <span>&#54984;&#50977; &#49436;&#48708;&#49828; UI/UX &#50629;&#45936;&#51060;&#53944;</span>
+          </li>
+          <li>
+            <time datetime="2026-07-07">2026.07.07</time>
+            <span>&#51452;&#51077; &#47704;&#53944; 100&#44060; &#50629;&#45936;&#51060;&#53944; 1&#52264; &#50756;&#47308;</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="result-modal" id="resultModal" hidden aria-labelledby="resultTitle" aria-modal="true" role="dialog">
+      <div class="result-card">
+        <button class="close-button" id="closeModal" type="button" aria-label="&#44208;&#44284; &#52285; &#45803;&#44592;">&#215;</button>
+
+        <div class="result-scene" id="resultScene" aria-hidden="true">
+          <div class="clinic-bed">
+            <span class="bed-rail"></span>
+            <span class="bed-pillow"></span>
+          </div>
+
+          <div class="patient-pig">
+            <span class="patient-ear left"></span>
+            <span class="patient-ear right"></span>
+            <span class="patient-face">
+              <span class="patient-eye left"></span>
+              <span class="patient-eye right"></span>
+              <span class="patient-nose"></span>
+            </span>
+            <span class="patient-body">
+              <span class="patient-belly"></span>
+            </span>
+            <span class="patient-leg front"></span>
+            <span class="patient-leg back"></span>
+          </div>
+
+          <div class="doctor-pig">
+            <span class="doctor-ear left"></span>
+            <span class="doctor-ear right"></span>
+            <span class="doctor-face">
+              <span class="doctor-eye left"></span>
+              <span class="doctor-eye right"></span>
+              <span class="doctor-nose"></span>
+            </span>
+            <span class="nurse-hat"></span>
+            <span class="doctor-body"></span>
+            <span class="doctor-arm"></span>
+          </div>
+
+          <div class="motion-syringe">
+            <span class="motion-plunger"></span>
+            <span class="motion-barrel"></span>
+            <span class="motion-needle"></span>
+          </div>
+        </div>
+
+        <div class="result-copy">
+          <span class="result-dose" id="resultDose">1mg</span>
+          <h2 id="resultTitle">&#51452;&#51077; &#50756;&#47308;</h2>
+          <p id="resultMessage">&#50724;&#45720;&#51032; &#51088;&#44537; &#47928;&#44396;&#44032; &#54364;&#49884;&#46121;&#45768;&#45796;.</p>
+        </div>
+
+        <div class="result-actions">
+          <button class="secondary-button" id="saveImageButton" type="button">&#49324;&#51652;&#51200;&#51109;&#54616;&#44592;</button>
+          <button class="secondary-button" id="copyLinkButton" type="button">&#47553;&#53356; &#48373;&#49324;&#54644;&#49436; &#52828;&#44396;&#50640;&#44172; &#44277;&#50976;&#54616;&#44592;</button>
+          <button class="secondary-button kakao-share-button" id="kakaoShareButton" type="button">&#52852;&#52852;&#50724;&#53665; &#52828;&#44396;&#50640;&#44172; &#44277;&#50976;&#54616;&#44592;</button>
+        </div>
+      </div>
+    </section>
+
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
