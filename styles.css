@@ -892,32 +892,31 @@ button {
   gap: 22px;
   justify-items: center;
   text-align: center;
-  transform: translateX(clamp(-34px, -3vw, -10px));
 }
 
 .clinic-signboard {
   position: relative;
   display: inline-grid;
   place-items: center;
-  min-width: min(300px, 74vw);
-  min-height: 50px;
-  padding: 8px 28px;
-  border: 2px solid rgba(255, 239, 190, 0.9);
-  border-radius: 14px;
+  min-width: min(248px, 68vw);
+  min-height: 42px;
+  padding: 6px 24px;
+  border: 1px solid rgba(255, 235, 178, 0.9);
+  border-radius: 12px;
   background:
-    linear-gradient(135deg, rgba(255, 242, 185, 0.96), rgba(182, 119, 23, 0.98) 48%, rgba(114, 62, 14, 0.98)),
-    linear-gradient(180deg, #f7d983, #9c641d);
-  color: #fffaf0;
-  font-size: clamp(1.45rem, 4vw, 2.25rem);
+    radial-gradient(circle at 24% 18%, rgba(255, 250, 211, 0.68), transparent 28%),
+    linear-gradient(135deg, #f6d983 0%, #bd8125 42%, #6f3e13 100%);
+  color: #fffdf4;
+  font-size: clamp(1.08rem, 2.8vw, 1.62rem);
   font-weight: 950;
   letter-spacing: 0;
   text-shadow:
-    0 2px 0 rgba(77, 36, 7, 0.52),
-    0 0 18px rgba(255, 255, 255, 0.28);
+    0 1px 0 rgba(61, 30, 7, 0.82),
+    0 0 12px rgba(255, 245, 194, 0.34);
   box-shadow:
-    0 18px 40px rgba(82, 48, 16, 0.22),
+    0 14px 32px rgba(82, 48, 16, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.58),
-    inset 0 -3px 0 rgba(70, 37, 8, 0.18);
+    inset 0 -2px 0 rgba(70, 37, 8, 0.22);
 }
 
 .clinic-signboard::before,
@@ -934,11 +933,11 @@ button {
 }
 
 .clinic-signboard::before {
-  left: 13px;
+  left: 11px;
 }
 
 .clinic-signboard::after {
-  right: 13px;
+  right: 11px;
 }
 
 .clinic-newsletter {
@@ -951,16 +950,47 @@ button {
 }
 
 .clinic-newsletter-card {
+  position: relative;
+  overflow: hidden;
   width: 100%;
-  padding: clamp(26px, 5vw, 54px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 18px;
+  padding: clamp(30px, 5vw, 58px);
+  border: 1px solid rgba(157, 109, 46, 0.2);
+  border-radius: 24px;
   background:
-    linear-gradient(135deg, rgba(255, 252, 244, 0.95), rgba(255, 239, 205, 0.9)),
-    rgba(255, 250, 241, 0.94);
+    linear-gradient(90deg, rgba(175, 102, 58, 0.08) 0 1px, transparent 1px 100%) 0 0 / 32px 32px,
+    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(255, 244, 224, 0.96)),
+    #fffaf0;
   box-shadow:
-    0 30px 70px rgba(74, 45, 19, 0.24),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+    0 30px 70px rgba(74, 45, 19, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+}
+
+.clinic-newsletter-card::before {
+  content: "";
+  position: absolute;
+  inset: 18px 18px auto 18px;
+  height: 8px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(126, 73, 28, 0.28) 0 3px, transparent 3.5px) 0 0 / 22px 8px repeat-x;
+  opacity: 0.75;
+}
+
+.clinic-newsletter-card::after {
+  content: "";
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  width: 58px;
+  height: 58px;
+  border: 2px solid rgba(147, 86, 40, 0.3);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 58%, #e98d8d 0 8px, transparent 9px),
+    radial-gradient(circle at 38% 36%, #2c150f 0 3px, transparent 4px),
+    radial-gradient(circle at 62% 36%, #2c150f 0 3px, transparent 4px),
+    #ffd0c8;
+  box-shadow: 0 8px 20px rgba(95, 54, 26, 0.12);
 }
 
 .newsletter-kicker {
@@ -970,27 +1000,29 @@ button {
   padding: 0 12px;
   border: 1px solid rgba(153, 103, 32, 0.24);
   border-radius: 999px;
-  background: #fff7e7;
-  color: #8a5414;
+  background: #fff4dc;
+  color: #7a4312;
   font-size: 0.78rem;
   font-weight: 950;
 }
 
 .clinic-newsletter-card h2 {
   margin: 16px 0 16px;
-  color: #321808;
-  font-size: clamp(1.85rem, 4vw, 3.1rem);
-  line-height: 1.1;
+  max-width: 760px;
+  color: #351909;
+  font-size: clamp(1.65rem, 3.4vw, 2.65rem);
+  line-height: 1.18;
   letter-spacing: 0;
 }
 
 .clinic-newsletter-copy {
   display: grid;
   gap: 10px;
-  color: #4b3222;
-  font-size: clamp(0.98rem, 2vw, 1.1rem);
-  font-weight: 750;
-  line-height: 1.6;
+  max-width: 790px;
+  color: #432817;
+  font-size: clamp(1rem, 1.9vw, 1.12rem);
+  font-weight: 800;
+  line-height: 1.72;
 }
 
 .clinic-newsletter-copy p,
@@ -1001,10 +1033,10 @@ button {
 .clinic-newsletter-copy ul {
   display: grid;
   gap: 8px;
-  padding: 14px 18px;
-  border: 1px solid rgba(153, 103, 32, 0.16);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.62);
+  padding: 16px 18px;
+  border: 1px solid rgba(153, 103, 32, 0.18);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
   list-style: none;
 }
 
@@ -1025,12 +1057,13 @@ button {
 .newsletter-signup-section {
   position: static;
   width: min(520px, 100%);
-  grid-template-columns: minmax(0, 1fr) 108px;
+  grid-template-columns: minmax(0, 1fr) 112px;
   margin-top: 24px;
-  padding: 7px;
-  border-color: rgba(153, 103, 32, 0.2);
-  background: rgba(255, 255, 255, 0.76);
-  box-shadow: 0 16px 34px rgba(93, 56, 21, 0.12);
+  padding: 8px;
+  border-color: rgba(153, 103, 32, 0.24);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 16px 34px rgba(93, 56, 21, 0.14);
 }
 
 .newsletter-signup-section input,
@@ -1041,9 +1074,9 @@ button {
 
 .brand-row {
   position: fixed;
-  left: 22px;
-  top: 22px;
-  z-index: 4;
+  left: 16px;
+  top: 16px;
+  z-index: 20;
   display: inline-flex;
   align-items: center;
   gap: 9px;
@@ -1095,14 +1128,16 @@ h1 {
 
 .subtitle {
   margin: -8px 0 2px;
-  padding: 8px 16px;
-  border: 1px solid rgba(135, 88, 36, 0.18);
+  padding: 9px 18px;
+  border: 1px solid rgba(154, 97, 35, 0.28);
   border-radius: 999px;
-  background: rgba(255, 252, 244, 0.88);
-  color: #4a2b12;
+  background: rgba(255, 253, 247, 0.96);
+  color: #3d1f0b;
   font-size: clamp(1rem, 3vw, 1.17rem);
   font-weight: 950;
-  box-shadow: 0 12px 30px rgba(97, 61, 29, 0.12);
+  box-shadow:
+    0 12px 30px rgba(97, 61, 29, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
 .injector-wrap {
@@ -2510,10 +2545,11 @@ h1 {
   }
 
   .clinic-signboard {
-    min-width: min(310px, 82vw);
-    min-height: 52px;
-    padding: 8px 26px;
-    border-radius: 13px;
+    min-width: min(232px, 72vw);
+    min-height: 40px;
+    padding: 6px 22px;
+    border-radius: 12px;
+    font-size: clamp(1.04rem, 5.2vw, 1.45rem);
   }
 
   .clinic-newsletter {
@@ -2523,8 +2559,16 @@ h1 {
   }
 
   .clinic-newsletter-card {
-    padding: 24px 18px;
-    border-radius: 14px;
+    padding: 34px 18px 24px;
+    border-radius: 18px;
+  }
+
+  .clinic-newsletter-card::after {
+    right: 18px;
+    top: 28px;
+    width: 44px;
+    height: 44px;
+    opacity: 0.72;
   }
 
   .newsletter-signup-section {
@@ -2607,8 +2651,9 @@ h1 {
   }
 
   .brand-row {
-    left: 12px;
-    top: 12px;
+    left: 10px;
+    top: 10px;
+    z-index: 20;
     min-height: 30px;
     padding: 0 10px;
     font-size: 0.72rem;
