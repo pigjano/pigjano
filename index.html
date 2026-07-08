@@ -1,10 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>&#46076;&#51648;&#51088;&#45432;</title>
-    <link rel="stylesheet" href="styles.css?v=20260708-clinic-layout" />
+    <link rel="stylesheet" href="styles.css?v=20260708-newsletter-layout" />
   </head>
   <body>
     <button class="language-toggle" id="languageToggle" type="button">English</button>
@@ -12,7 +12,7 @@
     <form class="newsletter-signup" id="newsletterForm">
       <label class="sr-only" for="newsletterEmail">&#51060;&#47700;&#51068; &#44396;&#46021;</label>
       <input id="newsletterEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="&#51060;&#47700;&#51068; &#44396;&#46021;" required />
-      <button id="newsletterButton" type="submit">&#44396;&#46021;</button>
+      <button id="newsletterButton" type="submit">&#54984;&#50977;&#48155;&#44592;</button>
       <p id="newsletterStatus" aria-live="polite"></p>
     </form>
 
@@ -88,8 +88,32 @@
         </output>
       </section>
 
-      <section class="clinic-view" aria-hidden="true">
-        <div class="clinic-view-frame"></div>
+      <section class="clinic-newsletter" aria-labelledby="clinicNewsletterTitle">
+        <div class="clinic-newsletter-card">
+          <span class="newsletter-kicker">Pigjano Clinic Letter</span>
+          <h2 id="clinicNewsletterTitle">돼지자노 클리닉에 오신 것을 환영합니다.</h2>
+          <div class="clinic-newsletter-copy">
+            <p>아직도 "내일부터 다이어트"를 외치고 계신가요?</p>
+            <p>걱정하지 마세요. 저희는 나태함과 합리화에 익숙한 여러분을 위해 훈육 시스템을 준비했습니다.</p>
+            <p>이메일을 입력하고 <strong>훈육받기</strong> 버튼을 눌러보세요.</p>
+            <p>그러면 정기적으로</p>
+            <ul>
+              <li>다이어트 의지를 자극하는 한마디</li>
+              <li>정신이 번쩍 드는 현실 직시 이미지</li>
+              <li>다이어트에 도움이 되는 정보와 실천 팁</li>
+            </ul>
+            <p>우리는 살을 빼주는 곳이 아닙니다. <strong>핑계를 빼주는 곳입니다.</strong></p>
+            <p>오늘 등록하고, 내일의 나에게 핑계를 남기지 마세요.</p>
+            <p>당신의 의지는 약해도, 우리의 메일은 꾸준합니다.</p>
+            <p>지금 바로 이메일을 등록하고, 돼지자노의 훈육을 시작하세요.</p>
+          </div>
+          <form class="newsletter-signup newsletter-signup-section" id="newsletterFormSection">
+            <label class="sr-only" for="newsletterEmailSection">이메일 구독</label>
+            <input id="newsletterEmailSection" name="email" type="email" inputmode="email" autocomplete="email" placeholder="이메일 입력" required />
+            <button id="newsletterButtonSection" type="submit">훈육받기</button>
+            <p id="newsletterStatusSection" aria-live="polite"></p>
+          </form>
+        </div>
       </section>
     </main>
 
@@ -175,6 +199,7 @@
     </section>
 
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"></script>
-    <script src="script.js?v=20260708-clinic-layout"></script>
+    <script src="script.js?v=20260708-newsletter-layout"></script>
   </body>
 </html>
+
