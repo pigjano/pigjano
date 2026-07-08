@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>&#46076;&#51648;&#51088;&#45432;</title>
-    <link rel="stylesheet" href="styles.css?v=20260708-clinic-simple" />
+    <link rel="stylesheet" href="styles.css?v=20260708-clinic-layout" />
   </head>
   <body>
     <button class="language-toggle" id="languageToggle" type="button">English</button>
@@ -24,6 +24,8 @@
 
     <main class="app-shell">
       <section class="hero" aria-labelledby="app-title">
+        <div class="clinic-signboard">&#46076;&#51648;&#53364;&#47532;&#45769;</div>
+
         <div class="brand-row">
           <span class="dose-dot" aria-hidden="true"></span>
           <span>Diet Injection Console</span>
@@ -84,6 +86,10 @@
         <output class="message-box" id="messageBox" aria-live="polite">
           &#50857;&#47049;&#51012; &#44256;&#47476;&#44256; &#51452;&#51077;&#54616;&#44592;&#47484; &#45572;&#47476;&#47732; &#44208;&#44284; &#52285;&#51060; &#50676;&#47549;&#45768;&#45796;.
         </output>
+      </section>
+
+      <section class="clinic-view" aria-hidden="true">
+        <div class="clinic-view-frame"></div>
       </section>
     </main>
 
@@ -169,6 +175,6 @@
     </section>
 
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"></script>
-    <script src="script.js?v=20260708-clinic-simple"></script>
+    <script src="script.js?v=20260708-clinic-layout"></script>
   </body>
 </html>
