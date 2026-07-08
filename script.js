@@ -1353,7 +1353,7 @@ function getShareUrl() {
 }
 
 function getShareImageUrl() {
-  return `${siteUrl}/share-${currentDose.replace(".", "-")}.png`;
+  return `${siteUrl}/share-${currentDose.replace(".", "-")}.png?v=20260708-2`;
 }
 
 function setDose(dose, updateUrl = false) {
