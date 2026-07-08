@@ -214,8 +214,8 @@ button {
   overflow: hidden;
   pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(255, 250, 239, 0.7) 0 28%, rgba(255, 250, 239, 0.2) 45%, rgba(255, 250, 239, 0.36) 100%),
-    linear-gradient(180deg, rgba(255, 248, 234, 0.42), rgba(246, 223, 180, 0.26)),
+    linear-gradient(90deg, rgba(255, 250, 239, 0.74) 0 30%, rgba(255, 250, 239, 0.22) 48%, rgba(255, 250, 239, 0.16) 100%),
+    linear-gradient(180deg, rgba(255, 248, 234, 0.34), rgba(246, 223, 180, 0.18)),
     url("clinic-hero-scene.png") center center / cover no-repeat;
 }
 
@@ -224,9 +224,8 @@ button {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 72% 48%, rgba(255, 255, 255, 0.08), transparent 31%),
-    linear-gradient(90deg, rgba(255, 251, 242, 0.68), transparent 34%, rgba(116, 67, 25, 0.08));
-  animation: clinicSceneSettle 6.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    radial-gradient(circle at 72% 48%, rgba(255, 255, 255, 0.06), transparent 31%),
+    linear-gradient(90deg, rgba(255, 251, 242, 0.58), transparent 36%, rgba(116, 67, 25, 0.06));
 }
 
 .hospital-backdrop::after {
@@ -237,36 +236,6 @@ button {
   bottom: 0;
   height: 28vh;
   background: linear-gradient(180deg, transparent, rgba(105, 63, 31, 0.16));
-}
-
-.clinic-door-motion {
-  position: absolute;
-  left: clamp(86px, 18vw, 330px);
-  top: clamp(138px, 26vh, 260px);
-  width: clamp(72px, 8vw, 142px);
-  height: clamp(190px, 26vh, 330px);
-  border-radius: 4px 18px 18px 4px;
-  background:
-    linear-gradient(90deg, rgba(55, 33, 18, 0.42), rgba(255, 220, 141, 0.12)),
-    linear-gradient(180deg, rgba(255, 242, 194, 0.3), rgba(86, 52, 25, 0.16));
-  transform-origin: left center;
-  animation: clinicDoorOpen 5.6s cubic-bezier(0.18, 0.9, 0.2, 1) 0.15s both;
-  mix-blend-mode: multiply;
-  opacity: 0.56;
-}
-
-.clinic-walk-glow {
-  position: absolute;
-  left: clamp(180px, 24vw, 440px);
-  bottom: 11vh;
-  width: min(58vw, 860px);
-  height: 22vh;
-  border-radius: 50%;
-  background:
-    radial-gradient(ellipse at 10% 52%, rgba(255, 231, 174, 0.32), transparent 28%),
-    radial-gradient(ellipse at 52% 56%, rgba(255, 247, 225, 0.22), transparent 48%);
-  filter: blur(4px);
-  animation: clinicWalkLight 5.8s ease-out 0.35s both;
 }
 
 .pasture-scene {

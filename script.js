@@ -1384,7 +1384,7 @@ function setLanguage(lang) {
   languageToggle.textContent = text.toggle;
   appTitle.textContent = text.title;
   subtitle.textContent = text.subtitle;
-  hospitalSign.textContent = text.sign;
+  if (hospitalSign) hospitalSign.textContent = text.sign;
   panelLabel.textContent = text.panel;
   injectButton.lastChild.textContent = ` ${text.inject}`;
   resultTitle.textContent = text.resultTitle;
