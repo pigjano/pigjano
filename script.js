@@ -10,6 +10,7 @@ const resultScene = document.querySelector("#resultScene");
 const saveImageButton = document.querySelector("#saveImageButton");
 const copyLinkButton = document.querySelector("#copyLinkButton");
 const kakaoShareButton = document.querySelector("#kakaoShareButton");
+const prescribeButton = document.querySelector("#prescribeButton");
 const languageToggle = document.querySelector("#languageToggle");
 const updateButton = document.querySelector("#updateButton");
 const updateModal = document.querySelector("#updateModal");
@@ -28,6 +29,11 @@ const subtitle = document.querySelector(".subtitle");
 const hospitalSign = document.querySelector(".hospital-sign");
 const panelLabel = document.querySelector(".panel-top span");
 const resultTitle = document.querySelector("#resultTitle");
+const recordLabel = document.querySelector("#recordLabel");
+const recordDose = document.querySelector("#recordDose");
+const recordMessage = document.querySelector("#recordMessage");
+const recordDate = document.querySelector("#recordDate");
+const recordSerial = document.querySelector("#recordSerial");
 const clinicNewsletterKicker = document.querySelector("#clinicNewsletterKicker");
 const clinicNewsletterTitle = document.querySelector("#clinicNewsletterTitle");
 const clinicNewsletterLead = document.querySelector("#clinicNewsletterLead");
@@ -171,6 +177,10 @@ const uiText = {
     resultTitle: "주입 완료",
     save: "사진저장하기",
     copy: "링크 복사해서 친구에게 공유하기",
+    prescribe: "친구에게 이 용량 처방하기",
+    prescribed: "처방 링크 복사완료",
+    recordLabel: "오늘의 훈육 기록증",
+    recordEmpty: "돼지자노 클리닉 처방 기록이 여기에 표시됩니다.",
     copied: "복사완료",
     copyPrompt: "링크를 복사해주세요."
   },
@@ -185,6 +195,10 @@ const uiText = {
     resultTitle: "Injection Complete",
     save: "Save Image",
     copy: "Copy Link and Share with a Friend",
+    prescribe: "Prescribe This Dose to a Friend",
+    prescribed: "Prescription Link Copied",
+    recordLabel: "Today's Discipline Record",
+    recordEmpty: "Your Pigjano clinic record will appear here.",
     copied: "Copied",
     copyPrompt: "Copy this link."
   }
@@ -408,6 +422,63 @@ function getShareImageUrl() {
   return `${siteUrl}/share-${currentDose.replace(".", "-")}.png?v=20260708-5`;
 }
 
+function getTodayStamp() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}.${month}.${day}`;
+}
+
+function getRecordHistory() {
+  try {
+    return JSON.parse(localStorage.getItem("pigjanoRecords") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveRecord(record) {
+  const history = getRecordHistory();
+  const nextHistory = [record, ...history].slice(0, 30);
+  localStorage.setItem("pigjanoRecords", JSON.stringify(nextHistory));
+  return nextHistory.length;
+}
+
+function makeRecordSerial(dose, historyLength) {
+  const doseCode = String(dose).replace(".", "");
+  const countCode = String(historyLength).padStart(3, "0");
+  return `PIGJANO-${doseCode}-${countCode}`;
+}
+
+function updateRecordCard(message) {
+  const text = uiText[currentLang];
+  const date = getTodayStamp();
+  const historyLength = getRecordHistory().length + 1;
+  const serial = makeRecordSerial(currentDose, historyLength);
+
+  recordLabel.textContent = text.recordLabel;
+  recordDose.textContent = `${currentDose}mg`;
+  recordMessage.textContent = message || text.recordEmpty;
+  recordDate.textContent = date;
+  recordSerial.textContent = serial;
+
+  saveRecord({
+    dose: currentDose,
+    message,
+    date,
+    serial,
+    language: currentLang
+  });
+}
+
+function getPrescriptionLink() {
+  const url = new URL(siteUrl);
+  url.searchParams.set("dose", currentDose);
+  url.searchParams.set("rx", "1");
+  return url.toString();
+}
+
 function setDose(dose, updateUrl = false) {
   if (!messages[dose]) return;
 
@@ -442,6 +513,9 @@ function setLanguage(lang) {
   resultTitle.textContent = text.resultTitle;
   saveImageButton.textContent = text.save;
   copyLinkButton.textContent = text.copy;
+  prescribeButton.textContent = text.prescribe;
+  recordLabel.textContent = text.recordLabel;
+  if (!currentMessage) recordMessage.textContent = text.recordEmpty;
   updateNewsletterLanguage();
   updateClinicNewsletterLanguage();
   updateReleaseLanguage();
@@ -464,6 +538,7 @@ function openResult() {
   resultDose.textContent = `${currentDose}mg`;
   resultMessage.textContent = message;
   messageBox.textContent = message;
+  updateRecordCard(message);
   resultModal.dataset.mood = mood;
   resultScene.dataset.mood = mood;
   resultModal.hidden = false;
@@ -503,6 +578,22 @@ async function copyResultLink() {
   setTimeout(() => {
     copyLinkButton.textContent = uiText[currentLang].copy;
   }, 1400);
+}
+
+async function copyPrescriptionLink() {
+  const link = getPrescriptionLink();
+  const text = uiText[currentLang];
+
+  try {
+    await navigator.clipboard.writeText(link);
+    prescribeButton.textContent = text.prescribed;
+  } catch {
+    window.prompt(text.copyPrompt, link);
+  }
+
+  setTimeout(() => {
+    prescribeButton.textContent = text.prescribe;
+  }, 1500);
 }
 
 async function shareToKakao() {
@@ -778,6 +869,7 @@ injectButton.addEventListener("click", openResult);
 closeModal.addEventListener("click", closeResult);
 copyLinkButton.addEventListener("click", copyResultLink);
 saveImageButton.addEventListener("click", saveResultImage);
+prescribeButton.addEventListener("click", copyPrescriptionLink);
 kakaoShareButton.addEventListener("click", shareToKakao);
 newsletterForm.addEventListener("submit", submitNewsletter);
 if (newsletterFormSection) newsletterFormSection.addEventListener("submit", submitNewsletter);
@@ -800,9 +892,17 @@ window.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeUpdateLog();
 });
 
-const initialDose = new URLSearchParams(window.location.search).get("dose");
+const params = new URLSearchParams(window.location.search);
+const initialDose = params.get("dose");
+const isPrescription = params.get("rx") === "1";
 setDose(initialDose || "1");
 setLanguage(currentLang);
+if (isPrescription && messages[currentDose]) {
+  messageBox.textContent =
+    currentLang === "en"
+      ? `${currentDose}mg was prescribed to you. Press Inject to receive it.`
+      : `${currentDose}mg 처방이 도착했습니다. 주입하기를 눌러 확인하세요.`;
+}
 initKakaoShare();
 
 
