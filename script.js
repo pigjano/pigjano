@@ -419,7 +419,7 @@ function getShareUrl() {
 }
 
 function getShareImageUrl() {
-  return `${siteUrl}/share-${currentDose.replace(".", "-")}.png?v=20260709-record-share`;
+  return `${siteUrl}/share-record-${currentDose.replace(".", "-")}.png?v=20260709-record-share-v2`;
 }
 
 function getTodayStamp() {
