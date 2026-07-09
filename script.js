@@ -271,13 +271,13 @@ const updateText = {
 const kakaoText = {
   ko: {
     button: "\uCE74\uCE74\uC624\uD1A1 \uCE5C\uAD6C\uC5D0\uAC8C \uACF5\uC720\uD558\uAE30",
-    title: "\uB3FC\uC9C0\uD6C8\uC721\uC18C \uC8FC\uC785 \uC644\uB8CC",
+    title: "\uB3FC\uC9C0\uC790\uB178 \uD6C8\uC721\uAE30\uB85D\uC99D",
     action: "\uB098\uB3C4 \uC8FC\uC785\uD558\uAE30",
     fallback: "\uCE74\uCE74\uC624\uD1A1 \uACF5\uC720\uB97C \uC0AC\uC6A9\uD560 \uC218 \uC5C6\uC5B4 \uB9C1\uD06C\uB97C \uBCF5\uC0AC\uD588\uC2B5\uB2C8\uB2E4."
   },
   en: {
     button: "Share with KakaoTalk",
-    title: "Pig Discipline Injection Complete",
+    title: "Pigjano Discipline Record",
     action: "Try Your Dose",
     fallback: "KakaoTalk sharing is unavailable, so the link was copied."
   }
@@ -415,11 +415,11 @@ function initKakaoShare() {
 }
 
 function getShareUrl() {
-  return `${siteUrl}/`;
+  return getPrescriptionLink();
 }
 
 function getShareImageUrl() {
-  return `${siteUrl}/share-${currentDose.replace(".", "-")}.png?v=20260708-5`;
+  return `${siteUrl}/share-${currentDose.replace(".", "-")}.png?v=20260709-record-share`;
 }
 
 function getTodayStamp() {
@@ -564,9 +564,7 @@ function closeUpdateLog() {
 }
 
 async function copyResultLink() {
-  const url = new URL(window.location.href);
-  url.searchParams.set("dose", currentDose);
-  const link = url.toString();
+  const link = getPrescriptionLink();
 
   try {
     await navigator.clipboard.writeText(link);
