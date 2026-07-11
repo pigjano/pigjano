@@ -77,6 +77,13 @@ function formatNumber(value) {
   if (value === null || value === undefined) return "\ubbf8\uacf5\uac1c";
   return Number.isInteger(value) ? value.toLocaleString("ko-KR") : value.toLocaleString("ko-KR", { maximumFractionDigits: 2 });
 }
+function getRunningDistance(kcal) {
+  return kcal / 60;
+}
+function formatRunningDistance(kcal) {
+  const distance = getRunningDistance(kcal);
+  return distance < 10 ? distance.toFixed(1) : distance.toFixed(0);
+}
 function renderFilters() {
   brandFilters.innerHTML = filters.map((brand) => `<button class="brand-filter ${brand === currentBrand ? "is-active" : ""}" type="button" data-brand="${brand}">${brand}</button>`).join("");
 }
@@ -93,7 +100,7 @@ function renderMenus() {
   const prefix = currentBrand === allLabel ? "\uc804\uccb4 \ub4f1\ub85d \uba54\ub274" : currentBrand;
   resultSummary.textContent = `${prefix} ${menus.length}\uac1c\ub97c \ubcf4\uace0 \uc788\uc2b5\ub2c8\ub2e4. \uce74\ub4dc\ub9c8\ub2e4 100g\ub2f9 \ub610\ub294 \ud55c \ub9c8\ub9ac \uae30\uc900\uc744 \ud655\uc778\ud558\uc138\uc694.`;
   emptyState.hidden = menus.length !== 0;
-  menuGrid.innerHTML = menus.map((item) => `<article class="menu-card"><div class="card-head"><span class="brand-tag">${item.brand}</span><span class="source-status ${item.reference ? "is-reference" : ""}">${item.reference ? "\ucc38\uace0\uce58" : "\uacf5\uc2dd \ud655\uc778"}</span></div><h2>${item.name}</h2><p class="weight">${item.type} \u00b7 ${item.weight}</p><div class="calorie-row"><strong>${formatNumber(item.kcal)}</strong><span>kcal / ${item.total ? "\ud55c \ub9c8\ub9ac" : "100g"}</span></div><dl class="nutrition"><div><dt>\ub2e8\ubc31\uc9c8</dt><dd>${formatNumber(item.protein)}${item.protein === null ? "" : "g"}</dd></div><div><dt>\ub098\ud2b8\ub968</dt><dd>${formatNumber(item.sodium)}${item.sodium === null ? "" : "mg"}</dd></div></dl><div class="card-links"><a class="source-link" href="${item.source}" target="_blank" rel="noopener noreferrer">${item.reference ? "\ucc38\uace0 \ucd9c\ucc98" : "\uacf5\uc2dd \uc601\uc591\uc815\ubcf4"}</a><a class="discipline-link" href="index.html#doseGrid">\ud6c8\uc721\ubc1b\uae30</a></div></article>`).join("");
+  menuGrid.innerHTML = menus.map((item) => `<article class="menu-card"><div class="card-head"><span class="brand-tag">${item.brand}</span><span class="source-status ${item.reference ? "is-reference" : ""}">${item.reference ? "\ucc38\uace0\uce58" : "\uacf5\uc2dd \ud655\uc778"}</span></div><h2>${item.name}</h2><p class="weight">${item.type} \u00b7 ${item.weight}</p><div class="calorie-row"><strong>${formatNumber(item.kcal)}</strong><span>kcal / ${item.total ? "\ud55c \ub9c8\ub9ac" : "100g"}</span></div><div class="run-target"><span>\ub6f0\ub2e4\uba74</span><strong>${formatRunningDistance(item.kcal)}km</strong><span>\uc815\ub3c4</span></div><dl class="nutrition"><div><dt>\ub2e8\ubc31\uc9c8</dt><dd>${formatNumber(item.protein)}${item.protein === null ? "" : "g"}</dd></div><div><dt>\ub098\ud2b8\ub968</dt><dd>${formatNumber(item.sodium)}${item.sodium === null ? "" : "mg"}</dd></div></dl><div class="card-links"><a class="source-link" href="${item.source}" target="_blank" rel="noopener noreferrer">${item.reference ? "\ucc38\uace0 \ucd9c\ucc98" : "\uacf5\uc2dd \uc601\uc591\uc815\ubcf4"}</a><a class="discipline-link" href="index.html#doseGrid">\ud6c8\uc721\ubc1b\uae30</a></div></article>`).join("");
 }
 brandFilters.addEventListener("click", (event) => { const button = event.target.closest("[data-brand]"); if (!button) return; currentBrand = button.dataset.brand; renderFilters(); renderMenus(); });
 menuSearch.addEventListener("input", renderMenus);
