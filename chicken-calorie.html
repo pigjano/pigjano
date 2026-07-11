@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="브랜드 치킨 메뉴의 공식 영양정보를 모아 보는 돼지자노 치킨 칼로리 도감" />
+    <title>&#52824;&#53416; &#52860;&#47196;&#47532; &#46020;&#44048; | &#46076;&#51648;&#51088;&#45432;</title>
+    <link rel="stylesheet" href="chicken-calorie.css?v=20260711" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="home-link" href="index.html" aria-label="돼지자노 클리닉으로 돌아가기">
+        <span class="home-mark">P</span>
+        <span>&#46076;&#51648;&#51088;&#45432; &#53364;&#47532;&#45769;</span>
+      </a>
+      <a class="instagram-mini" href="https://www.instagram.com/pigjano/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    </header>
+
+    <main>
+      <section class="guide-hero" aria-labelledby="guideTitle">
+        <div class="hero-copy">
+          <p class="eyebrow">PIGJANO FOOD RECORDS</p>
+          <h1 id="guideTitle">&#52824;&#53416; &#52860;&#47196;&#47532; &#46020;&#44048;</h1>
+          <p class="hero-lead">&#47673;&#44592; &#51204;&#50640; &#54869;&#51064;&#54616;&#44256;, &#49885;&#45800;&#51008; &#45908; &#54869;&#49892;&#54616;&#44172; &#44256;&#47476;&#49464;&#50836;.</p>
+          <div class="hero-note">
+            <span>&#128203;</span>
+            <p>&#54805;&#51116; &#44277;&#44060;&#48516;&#51008; &#48652;&#47004;&#46300; &#44277;&#49885; &#47700;&#45684; &#54252;&#51648;&#51032; 100g&#45817; &#50689;&#50577;&#51221;&#48372;&#51077;&#45768;&#45796;. &#48320;&#44221;&#46112; &#47700;&#45684;&#45716; &#44277;&#49885; &#44277;&#51648; &#54869;&#51064; &#54980; &#49692;&#52264; &#52628;&#44032;&#46121;&#45768;&#45796;.</p>
+          </div>
+        </div>
+        <aside class="hero-stat" aria-label="현재 등록 메뉴 수">
+          <span>&#44277;&#49885; &#45936;&#51060;&#53552;</span>
+          <strong id="menuCount">0</strong>
+          <small>&#44060; &#47700;&#45684; &#44277;&#44060; &#51473;</small>
+        </aside>
+      </section>
+
+      <section class="catalog" aria-label="치킨 칼로리 목록">
+        <div class="catalog-tools">
+          <div class="brand-filters" id="brandFilters" aria-label="브랜드 필터"></div>
+          <div class="search-sort">
+            <label class="search-box" for="menuSearch">
+              <span aria-hidden="true">&#128269;</span>
+              <input id="menuSearch" type="search" placeholder="&#47700;&#45684; &#44160;&#49353;" autocomplete="off" />
+            </label>
+            <label class="sort-box" for="menuSort">
+              <span>&#51221;&#47148;</span>
+              <select id="menuSort">
+                <option value="default">&#52628;&#52380;&#49692;</option>
+                <option value="low">&#45230;&#51008; &#52860;&#47196;&#47532;&#49692;</option>
+                <option value="high">&#45458;&#51008; &#52860;&#47196;&#47532;&#49692;</option>
+                <option value="protein">&#45800;&#48177;&#51656; &#45458;&#51008; &#49692;</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <p class="result-summary" id="resultSummary" aria-live="polite"></p>
+        <div class="menu-grid" id="menuGrid"></div>
+        <div class="empty-state" id="emptyState" hidden>
+          <span>&#128203;</span>
+          <h2>&#52286;&#45716; &#47700;&#45684;&#44032; &#50630;&#49845;&#45768;&#45796;.</h2>
+          <p>&#45796;&#47480; &#47700;&#45684;&#47749;&#51060;&#45208; &#48652;&#47004;&#46300;&#47484; &#44160;&#49353;&#54644;&#48372;&#49464;&#50836;.</p>
+        </div>
+      </section>
+
+      <section class="catalog-notice">
+        <div>
+          <p class="eyebrow">READ BEFORE YOU ORDER</p>
+          <h2>&#50689;&#50577;&#51221;&#48372;&#45716; &#49324;&#50857;&#48277;&#48372;&#45796; &#51312;&#54924;&#50857;&#51077;&#45768;&#45796;.</h2>
+          <p>&#52860;&#47196;&#47532;&#45716; &#49324;&#51060;&#51592;, &#48512;&#50948;, &#49548;&#49828;, &#51312;&#47532; &#49345;&#53468;&#50640; &#46384;&#46972; &#45804;&#46972;&#51656; &#49688; &#51080;&#49845;&#45768;&#45796;. &#51452;&#47928; &#51204;&#50640; &#54644;&#45817; &#48652;&#47004;&#46300;&#51032; &#52572;&#49888; &#44277;&#49885; &#50689;&#50577;&#51221;&#48372;&#47484; &#54620; &#48264; &#45908; &#54869;&#51064;&#54616;&#49464;&#50836;.</p>
+        </div>
+        <a class="discipline-cta" href="index.html#doseGrid">&#51088;&#44537; &#51452;&#51077;&#54616;&#47084; &#44032;&#44592;</a>
+      </section>
+    </main>
+
+    <footer>&copy; 2026 PIGJANO CLINIC. &#52860;&#47196;&#47532; &#46020;&#44048; 1&#52264; &#44277;&#44060;&#48516;.</footer>
+    <script src="chicken-calorie.js?v=20260711"></script>
+  </body>
+</html>

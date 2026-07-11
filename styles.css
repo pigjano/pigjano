@@ -207,6 +207,32 @@ button {
   background: #fff;
 }
 
+.calorie-guide-link {
+  position: fixed;
+  left: 22px;
+  top: 70px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 2px solid rgba(255, 255, 255, 0.82);
+  border-radius: 10px;
+  background: rgba(255, 250, 241, 0.94);
+  box-shadow: 0 10px 24px rgba(116, 76, 39, 0.16);
+  color: #4b2117;
+  font-size: 0.75rem;
+  font-weight: 950;
+  text-decoration: none;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.calorie-guide-link:hover {
+  transform: translateY(-2px);
+  background: #fff;
+}
+
 .hospital-backdrop {
   position: fixed;
   inset: 0;
