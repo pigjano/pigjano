@@ -68,6 +68,8 @@ h1 { margin-bottom: 13px; font-size: clamp(2.1rem, 5vw, 4.5rem); line-height: 1;
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .brand-tag { padding: 5px 7px; border-radius: 4px; background: #f5e5d1; color: #7b412c; font-size: .68rem; font-weight: 950; }
 .type-tag { color: #9a8173; font-size: .7rem; font-weight: 800; }
+.source-status { padding: 5px 7px; border-radius: 4px; background: #e8f1e8; color: #356141; font-size: .65rem; font-weight: 950; }
+.source-status.is-reference { background: #fbebd8; color: #8b5626; }
 .menu-card h2 { margin: 16px 0 4px; font-size: 1.1rem; line-height: 1.35; }
 .weight { min-height: 22px; color: #8c7a6e; font-size: .75rem; font-weight: 700; }
 .calorie-row { display: flex; align-items: end; gap: 5px; margin: 17px 0; }
