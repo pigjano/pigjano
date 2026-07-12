@@ -8,7 +8,6 @@ const resultDose = document.querySelector("#resultDose");
 const resultMessage = document.querySelector("#resultMessage");
 const resultScene = document.querySelector("#resultScene");
 const saveImageButton = document.querySelector("#saveImageButton");
-const copyLinkButton = document.querySelector("#copyLinkButton");
 const kakaoShareButton = document.querySelector("#kakaoShareButton");
 const prescribeButton = document.querySelector("#prescribeButton");
 const languageToggle = document.querySelector("#languageToggle");
@@ -702,7 +701,6 @@ function setLanguage(lang) {
   injectButton.lastChild.textContent = ` ${text.inject}`;
   resultTitle.textContent = text.resultTitle;
   saveImageButton.textContent = text.save;
-  copyLinkButton.textContent = text.copy;
   prescribeButton.textContent = text.prescribe;
   recordLabel.textContent = text.recordLabel;
   if (!currentMessage) recordMessage.textContent = text.recordEmpty;
@@ -754,21 +752,6 @@ function closeUpdateLog() {
   updateModal.hidden = true;
 }
 
-async function copyResultLink() {
-  const link = getPrescriptionLink();
-
-  try {
-    await navigator.clipboard.writeText(link);
-    copyLinkButton.textContent = uiText[currentLang].copied;
-  } catch {
-    window.prompt(uiText[currentLang].copyPrompt, link);
-  }
-
-  setTimeout(() => {
-    copyLinkButton.textContent = uiText[currentLang].copy;
-  }, 1400);
-}
-
 async function copyPrescriptionLink() {
   const link = getPrescriptionLink();
   const text = uiText[currentLang];
@@ -795,9 +778,9 @@ async function shareToKakao() {
 
   if (!window.Kakao || !window.Kakao.Share) {
     await navigator.clipboard.writeText(shareUrl).catch(() => {});
-    copyLinkButton.textContent = text.fallback;
+    kakaoShareButton.textContent = text.fallback;
     setTimeout(() => {
-      copyLinkButton.textContent = uiText[currentLang].copy;
+      kakaoShareButton.textContent = text.button;
     }, 1600);
     return;
   }
@@ -1058,7 +1041,6 @@ injectButton.addEventListener("click", openResult);
 missionDrawButton.addEventListener("click", drawDailyMission);
 missionCompleteButton.addEventListener("click", completeDailyMission);
 closeModal.addEventListener("click", closeResult);
-copyLinkButton.addEventListener("click", copyResultLink);
 saveImageButton.addEventListener("click", saveResultImage);
 prescribeButton.addEventListener("click", copyPrescriptionLink);
 kakaoShareButton.addEventListener("click", shareToKakao);

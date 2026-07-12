@@ -2551,21 +2551,10 @@ h1 {
     border-color 150ms ease;
 }
 
-.secondary-button:nth-child(2) {
-  border-color: #ffb0b8;
-  background: linear-gradient(135deg, #ff4d5e, #a51424);
-  color: #fff;
-  font-size: clamp(0.82rem, 2.1vw, 0.95rem);
-}
-
 .secondary-button:hover {
   transform: translateY(-1px);
   border-color: #fff;
   background: #ffffff;
-}
-
-.secondary-button:nth-child(2):hover {
-  background: linear-gradient(135deg, #ff6574, #ba1728);
 }
 
 .prescribe-button {
@@ -2579,6 +2568,7 @@ h1 {
 }
 
 .kakao-share-button {
+  grid-column: 1 / -1;
   border-color: rgba(68, 48, 0, 0.18);
   background: linear-gradient(135deg, #fee500, #ffd84d);
   color: #2b1e0b;
