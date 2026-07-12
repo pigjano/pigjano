@@ -57,6 +57,14 @@ const missionDescription = document.querySelector("#missionDescription");
 const missionKicker = document.querySelector("#missionKicker");
 const missionDrawButtonText = document.querySelector("#missionDrawButtonText");
 const missionCompleteButtonText = document.querySelector("#missionCompleteButtonText");
+const missionModal = document.querySelector("#missionModal");
+const closeMissionModal = document.querySelector("#closeMissionModal");
+const missionPopupText = document.querySelector("#missionPopupText");
+const missionPopupDate = document.querySelector("#missionPopupDate");
+const missionPopupDescription = document.querySelector("#missionPopupDescription");
+const missionModalKicker = document.querySelector("#missionModalKicker");
+const missionRecordButton = document.querySelector("#missionRecordButton");
+const missionRecordButtonText = document.querySelector("#missionRecordButtonText");
 
 const supabaseUrl = "https://blkxiayxrjsjylmyvkvi.supabase.co";
 const supabaseAnonKey =
@@ -107,6 +115,9 @@ const missionText = {
     drawing: "미션 추첨 중...",
     complete: "미션 완료",
     completed: "오늘의 미션 완료",
+    popupKicker: "TODAY'S DISCIPLINE DRAW",
+    popupDescription: "오늘 한 가지만 완료해보세요. 작은 기록이 다음 선택을 바꿉니다.",
+    record: "나의 훈육미션에 기록하기",
     ready: "오늘의 미션을 뽑아보세요.",
     chosen: "오늘의 미션이 도착했습니다.",
     done: "오늘의 훈육 도장이 찍혔습니다."
@@ -119,6 +130,9 @@ const missionText = {
     drawing: "Drawing...",
     complete: "Complete Mission",
     completed: "Mission Completed",
+    popupKicker: "TODAY'S DISCIPLINE DRAW",
+    popupDescription: "Complete one small thing today. Small records change the next choice.",
+    record: "Add to My Mission Record",
     ready: "Draw today's mission.",
     chosen: "Today's mission is ready.",
     done: "Today's discipline stamp is complete."
@@ -127,6 +141,7 @@ const missionText = {
 
 let activeMission = null;
 let missionIsDrawing = false;
+let pendingMissionIndex = null;
 
 const messages = {
   "1": "야 돼지야, 오늘 저녁은 가볍게 가자. 네 몸은 이미 충분히 일했다.",
@@ -622,6 +637,9 @@ function updateMissionLanguage() {
   missionKicker.textContent = text.kicker;
   missionTitle.textContent = text.title;
   missionDescription.textContent = text.description;
+  missionModalKicker.textContent = text.popupKicker;
+  missionPopupDescription.textContent = text.popupDescription;
+  missionRecordButtonText.textContent = text.record;
 
   if (missionIsDrawing) {
     missionDrawButtonText.textContent = text.drawing;
@@ -668,15 +686,43 @@ function drawDailyMission() {
   const spin = window.setInterval(() => {
     renderMissionGrid(Math.floor(Math.random() * dailyMissions.length), true);
     ticks += 1;
-    if (ticks < 22) return;
+    if (ticks < 7) return;
 
     window.clearInterval(spin);
     const finalIndex = Math.floor(Math.random() * dailyMissions.length);
-    activeMission = { day: getMissionDayKey(), index: finalIndex, completed: false };
-    writeDailyMission();
+    pendingMissionIndex = finalIndex;
     missionIsDrawing = false;
+    renderMissionGrid(finalIndex);
+    missionDrawButton.disabled = false;
+    missionDrawButtonText.textContent = text.draw;
+    missionStatus.textContent = text.chosen;
+    openMissionModal();
+  }, 85);
+}
+
+function openMissionModal() {
+  if (pendingMissionIndex === null) return;
+  const now = new Date();
+  missionPopupText.textContent = dailyMissions[pendingMissionIndex];
+  missionPopupDate.textContent = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
+  missionModal.hidden = false;
+}
+
+function closeMissionDraw() {
+  missionModal.hidden = true;
+  if (!activeMission && pendingMissionIndex !== null) {
+    pendingMissionIndex = null;
     renderDailyMission();
-  }, 105);
+  }
+}
+
+function recordDailyMission() {
+  if (pendingMissionIndex === null || activeMission) return;
+  activeMission = { day: getMissionDayKey(), index: pendingMissionIndex, completed: false };
+  pendingMissionIndex = null;
+  writeDailyMission();
+  missionModal.hidden = true;
+  renderDailyMission();
 }
 
 function completeDailyMission() {
@@ -1040,6 +1086,8 @@ async function saveResultImage() {
 injectButton.addEventListener("click", openResult);
 missionDrawButton.addEventListener("click", drawDailyMission);
 missionCompleteButton.addEventListener("click", completeDailyMission);
+missionRecordButton.addEventListener("click", recordDailyMission);
+closeMissionModal.addEventListener("click", closeMissionDraw);
 closeModal.addEventListener("click", closeResult);
 saveImageButton.addEventListener("click", saveResultImage);
 prescribeButton.addEventListener("click", copyPrescriptionLink);
@@ -1060,9 +1108,14 @@ updateModal.addEventListener("click", (event) => {
   if (event.target === updateModal) closeUpdateLog();
 });
 
+missionModal.addEventListener("click", (event) => {
+  if (event.target === missionModal) closeMissionDraw();
+});
+
 window.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeResult();
   if (event.key === "Escape") closeUpdateLog();
+  if (event.key === "Escape") closeMissionDraw();
 });
 
 const params = new URLSearchParams(window.location.search);

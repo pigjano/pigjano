@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>&#46076;&#51648;&#51088;&#45432;</title>
-    <link rel="stylesheet" href="styles.css?v=20260713-result-actions" />
+    <link rel="stylesheet" href="styles.css?v=20260713-mission-popup" />
   </head>
   <body>
     <button class="language-toggle" id="languageToggle" type="button">English</button>
@@ -252,9 +252,27 @@
       </div>
     </section>
 
+    <section class="mission-modal" id="missionModal" hidden aria-labelledby="missionModalTitle" aria-modal="true" role="dialog">
+      <div class="mission-modal-card">
+        <button class="close-button mission-close-button" id="closeMissionModal" type="button" aria-label="&#54984;&#50977; &#48120;&#49496; &#52285; &#45803;&#44592;">&#215;</button>
+        <span class="mission-modal-kicker" id="missionModalKicker">TODAY'S DISCIPLINE DRAW</span>
+        <h2 id="missionModalTitle">&#50724;&#45720;&#51032; &#54984;&#50977; &#48120;&#49496;</h2>
+        <div class="mission-ticket">
+          <span>&#49892;&#52380; &#48120;&#49496;</span>
+          <strong id="missionPopupText">-</strong>
+          <small id="missionPopupDate">0000.00.00</small>
+        </div>
+        <p id="missionPopupDescription">&#50724;&#45720; &#54616; &#44032;&#51648;&#47564; &#50756;&#47308;&#54644;&#48372;&#49464;&#50836;.</p>
+        <button class="mission-record-button" id="missionRecordButton" type="button">
+          <span aria-hidden="true">&#10003;</span>
+          <span id="missionRecordButtonText">&#45208;&#51032; &#54984;&#50977;&#48120;&#49496;&#50640; &#44592;&#47197;&#54616;&#44592;</span>
+        </button>
+      </div>
+    </section>
+
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"></script>
     <script src="messages.js?v=20260708-dose-300"></script>
-    <script src="script.js?v=20260713-result-actions"></script>
+    <script src="script.js?v=20260713-mission-popup"></script>
   </body>
 </html>
 
