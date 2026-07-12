@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>&#46076;&#51648;&#51088;&#45432;</title>
-    <link rel="stylesheet" href="styles.css?v=20260711-chicken-guide" />
+    <link rel="stylesheet" href="styles.css?v=20260713-daily-mission" />
   </head>
   <body>
     <button class="language-toggle" id="languageToggle" type="button">English</button>
@@ -91,6 +91,32 @@
         <output class="message-box" id="messageBox" aria-live="polite">
           &#50857;&#47049;&#51012; &#44256;&#47476;&#44256; &#51452;&#51077;&#54616;&#44592;&#47484; &#45572;&#47476;&#47732; &#44208;&#44284; &#52285;&#51060; &#50676;&#47549;&#45768;&#45796;.
         </output>
+      </section>
+
+      <section class="daily-mission" aria-labelledby="missionTitle">
+        <div class="mission-heading">
+          <span class="mission-kicker" id="missionKicker">PIGJANO DAILY DRAW</span>
+          <h2 id="missionTitle">&#50724;&#45720;&#51032; &#54984;&#50977; &#48120;&#49496;</h2>
+          <p id="missionDescription">&#45768;&#47784;&#45212; &#52628;&#52380;&#44592;&#50640;&#49436; &#50724;&#45720; &#54616;&#45208;&#51032; &#49892;&#52380; &#48120;&#49496;&#51012; &#48155;&#50500;&#48372;&#49464;&#50836;.</p>
+        </div>
+        <div class="mission-draw" id="missionDraw">
+          <div class="mission-grid" id="missionGrid" aria-live="polite">
+            <span class="mission-cell"></span><span class="mission-cell"></span><span class="mission-cell"></span>
+            <span class="mission-cell"></span><span class="mission-cell mission-cell-center" id="missionCenter">?</span><span class="mission-cell"></span>
+            <span class="mission-cell"></span><span class="mission-cell"></span><span class="mission-cell"></span>
+          </div>
+          <div class="mission-actions">
+            <button class="mission-draw-button" id="missionDrawButton" type="button">
+              <span aria-hidden="true">&#127922;</span>
+              <span id="missionDrawButtonText">&#50724;&#45720;&#51032; &#54984;&#50977; &#48120;&#49496; &#48155;&#44592;</span>
+            </button>
+            <button class="mission-complete-button" id="missionCompleteButton" type="button" hidden>
+              <span aria-hidden="true">&#10003;</span>
+              <span id="missionCompleteButtonText">&#48120;&#49496; &#50756;&#47308;</span>
+            </button>
+            <p class="mission-status" id="missionStatus" aria-live="polite"></p>
+          </div>
+        </div>
       </section>
 
       <section class="clinic-newsletter" aria-labelledby="clinicNewsletterTitle">
@@ -229,7 +255,7 @@
 
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"></script>
     <script src="messages.js?v=20260708-dose-300"></script>
-    <script src="script.js?v=20260709-safe-card"></script>
+    <script src="script.js?v=20260713-daily-mission"></script>
   </body>
 </html>
 

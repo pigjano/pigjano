@@ -47,6 +47,17 @@ const clinicNewsletterBody7 = document.querySelector("#clinicNewsletterBody7");
 const clinicNewsletterItem1 = document.querySelector("#clinicNewsletterItem1");
 const clinicNewsletterItem2 = document.querySelector("#clinicNewsletterItem2");
 const clinicNewsletterItem3 = document.querySelector("#clinicNewsletterItem3");
+const missionGrid = document.querySelector("#missionGrid");
+const missionCells = [...document.querySelectorAll(".mission-cell")];
+const missionCenter = document.querySelector("#missionCenter");
+const missionDrawButton = document.querySelector("#missionDrawButton");
+const missionCompleteButton = document.querySelector("#missionCompleteButton");
+const missionStatus = document.querySelector("#missionStatus");
+const missionTitle = document.querySelector("#missionTitle");
+const missionDescription = document.querySelector("#missionDescription");
+const missionKicker = document.querySelector("#missionKicker");
+const missionDrawButtonText = document.querySelector("#missionDrawButtonText");
+const missionCompleteButtonText = document.querySelector("#missionCompleteButtonText");
 
 const supabaseUrl = "https://blkxiayxrjsjylmyvkvi.supabase.co";
 const supabaseAnonKey =
@@ -54,6 +65,69 @@ const supabaseAnonKey =
 const newsletterTable = "newsletter_subscribers";
 const kakaoJavascriptKey = "3cf19f09aa012394d68342cbae1cd395";
 const siteUrl = "https://www.pigjano.com";
+
+const dailyMissions = [
+  "물 6잔 마시기",
+  "15분 산책하기",
+  "오늘 야식 건너뛰기",
+  "배달앱 열지 않기",
+  "식사 전 물 한 잔 마시기",
+  "스트레칭 5분 하기",
+  "단 음료 대신 물 마시기",
+  "식사할 때 영상 끄기",
+  "한 끼 천천히 먹기",
+  "식후 10분 걷기",
+  "엘리베이터 대신 계단 3층 걷기",
+  "과일로 간식 바꾸기",
+  "저녁 접시 80%에서 멈추기",
+  "채소 한 접시 더하기",
+  "단백질 포함한 한 끼 먹기",
+  "밤 11시 전에 침대에 눕기",
+  "군것질 생각날 때 5분 기다리기",
+  "아침에 창문 열고 3분 움직이기",
+  "오늘 걸음 수 6,000보 채우기",
+  "식사 후 바로 눕지 않기",
+  "냉장고 열기 전에 물 마시기",
+  "하루 한 번 내 몸 칭찬하기",
+  "편의점 간식 대신 견과류 고르기",
+  "소스는 절반만 찍어 먹기",
+  "저녁 먹고 양치하기",
+  "운동 영상 대신 스쿼트 10개 하기",
+  "아침 식사 거르지 않기",
+  "오늘 과식한 이유 한 줄 기록하기",
+  "10분 일찍 내려 한 정거장 걷기",
+  "내일 먹을 건강한 간식 준비하기"
+];
+
+const missionText = {
+  ko: {
+    kicker: "PIGJANO DAILY DRAW",
+    title: "오늘의 훈육 미션",
+    description: "네모난 추첨기에서 오늘 하나의 실천 미션을 받아보세요.",
+    draw: "오늘의 훈육 미션 받기",
+    drawing: "미션 추첨 중...",
+    complete: "미션 완료",
+    completed: "오늘의 미션 완료",
+    ready: "오늘의 미션을 뽑아보세요.",
+    chosen: "오늘의 미션이 도착했습니다.",
+    done: "오늘의 훈육 도장이 찍혔습니다."
+  },
+  en: {
+    kicker: "PIGJANO DAILY DRAW",
+    title: "Today's Mission",
+    description: "Draw one small mission for today.",
+    draw: "Draw Today's Mission",
+    drawing: "Drawing...",
+    complete: "Complete Mission",
+    completed: "Mission Completed",
+    ready: "Draw today's mission.",
+    chosen: "Today's mission is ready.",
+    done: "Today's discipline stamp is complete."
+  }
+};
+
+let activeMission = null;
+let missionIsDrawing = false;
 
 const messages = {
   "1": "야 돼지야, 오늘 저녁은 가볍게 가자. 네 몸은 이미 충분히 일했다.",
@@ -497,6 +571,122 @@ function setDose(dose, updateUrl = false) {
   }
 }
 
+function getMissionDayKey() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+}
+
+function shuffleMissionIndexes(excludedIndex = -1) {
+  const indexes = dailyMissions.map((_, index) => index).filter((index) => index !== excludedIndex);
+  for (let index = indexes.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [indexes[index], indexes[swapIndex]] = [indexes[swapIndex], indexes[index]];
+  }
+  return indexes;
+}
+
+function renderMissionGrid(missionIndex = null, isSpinning = false) {
+  const options = shuffleMissionIndexes(missionIndex);
+  missionCells.forEach((cell, index) => {
+    cell.classList.remove("is-spinning", "is-winner");
+    if (index === 4) {
+      cell.textContent = missionIndex === null ? "?" : dailyMissions[missionIndex];
+      if (isSpinning) cell.classList.add("is-spinning");
+      return;
+    }
+    cell.textContent = dailyMissions[options.pop()];
+    if (isSpinning && index === (missionIndex + 2) % missionCells.length) {
+      cell.classList.add("is-spinning");
+    }
+  });
+
+  if (missionIndex !== null && !isSpinning) {
+    missionCenter.classList.add("is-winner");
+  }
+}
+
+function readDailyMission() {
+  try {
+    const stored = JSON.parse(localStorage.getItem("pigjanoDailyMission"));
+    return stored && stored.day === getMissionDayKey() ? stored : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeDailyMission() {
+  localStorage.setItem("pigjanoDailyMission", JSON.stringify(activeMission));
+}
+
+function updateMissionLanguage() {
+  const text = missionText[currentLang];
+  missionKicker.textContent = text.kicker;
+  missionTitle.textContent = text.title;
+  missionDescription.textContent = text.description;
+
+  if (missionIsDrawing) {
+    missionDrawButtonText.textContent = text.drawing;
+    return;
+  }
+  if (!activeMission) {
+    missionDrawButtonText.textContent = text.draw;
+    missionStatus.textContent = text.ready;
+    return;
+  }
+  missionDrawButtonText.textContent = text.draw;
+  missionCompleteButtonText.textContent = activeMission.completed ? text.completed : text.complete;
+  missionStatus.textContent = activeMission.completed ? text.done : text.chosen;
+}
+
+function renderDailyMission() {
+  const text = missionText[currentLang];
+  if (!activeMission) {
+    renderMissionGrid();
+    missionDrawButton.disabled = false;
+    missionCompleteButton.hidden = true;
+    missionStatus.textContent = text.ready;
+    missionDrawButtonText.textContent = text.draw;
+    return;
+  }
+
+  renderMissionGrid(activeMission.index);
+  missionDrawButton.disabled = true;
+  missionCompleteButton.hidden = false;
+  missionCompleteButton.disabled = activeMission.completed;
+  missionCompleteButtonText.textContent = activeMission.completed ? text.completed : text.complete;
+  missionStatus.textContent = activeMission.completed ? text.done : text.chosen;
+}
+
+function drawDailyMission() {
+  if (missionIsDrawing || activeMission) return;
+  const text = missionText[currentLang];
+  missionIsDrawing = true;
+  missionDrawButton.disabled = true;
+  missionDrawButtonText.textContent = text.drawing;
+  missionStatus.textContent = text.drawing;
+
+  let ticks = 0;
+  const spin = window.setInterval(() => {
+    renderMissionGrid(Math.floor(Math.random() * dailyMissions.length), true);
+    ticks += 1;
+    if (ticks < 22) return;
+
+    window.clearInterval(spin);
+    const finalIndex = Math.floor(Math.random() * dailyMissions.length);
+    activeMission = { day: getMissionDayKey(), index: finalIndex, completed: false };
+    writeDailyMission();
+    missionIsDrawing = false;
+    renderDailyMission();
+  }, 105);
+}
+
+function completeDailyMission() {
+  if (!activeMission || activeMission.completed) return;
+  activeMission.completed = true;
+  writeDailyMission();
+  renderDailyMission();
+}
+
 function setLanguage(lang) {
   currentLang = lang;
   localStorage.setItem("pigjanoLang", lang);
@@ -520,6 +710,7 @@ function setLanguage(lang) {
   updateClinicNewsletterLanguage();
   updateReleaseLanguage();
   updateKakaoLanguage();
+  updateMissionLanguage();
 
   if (resultModal.hidden) {
     messageBox.textContent = text.placeholder;
@@ -864,6 +1055,8 @@ async function saveResultImage() {
 }
 
 injectButton.addEventListener("click", openResult);
+missionDrawButton.addEventListener("click", drawDailyMission);
+missionCompleteButton.addEventListener("click", completeDailyMission);
 closeModal.addEventListener("click", closeResult);
 copyLinkButton.addEventListener("click", copyResultLink);
 saveImageButton.addEventListener("click", saveResultImage);
@@ -893,8 +1086,10 @@ window.addEventListener("keydown", (event) => {
 const params = new URLSearchParams(window.location.search);
 const initialDose = params.get("dose");
 const isPrescription = params.get("rx") === "1";
+activeMission = readDailyMission();
 setDose(initialDose || "1");
 setLanguage(currentLang);
+renderDailyMission();
 if (isPrescription && messages[currentDose]) {
   messageBox.textContent =
     currentLang === "en"
