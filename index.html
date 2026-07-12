@@ -4,9 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>&#46076;&#51648;&#51088;&#45432;</title>
-    <link rel="stylesheet" href="styles.css?v=20260713-mission-popup" />
+    <link rel="stylesheet" href="styles.css?v=20260713-account-community" />
   </head>
   <body>
+    <nav class="side-menu" aria-label="내비게이션">
+      <button class="side-menu-button" id="profileButton" type="button">
+        <span class="side-menu-icon" aria-hidden="true">&#9786;</span>
+        <span id="profileButtonText">나의 페이지</span>
+      </button>
+      <button class="side-menu-button" id="communityButton" type="button">
+        <span class="side-menu-icon" aria-hidden="true">&#9998;</span>
+        <span id="communityButtonText">게시판</span>
+      </button>
+    </nav>
+
     <button class="language-toggle" id="languageToggle" type="button">English</button>
 
     <form class="newsletter-signup" id="newsletterForm">
@@ -278,10 +289,59 @@
       </div>
     </section>
 
+    <section class="account-modal" id="profileModal" hidden aria-labelledby="profileTitle" aria-modal="true" role="dialog">
+      <div class="account-card">
+        <button class="close-button" id="closeProfileModal" type="button" aria-label="나의 페이지 닫기">&#215;</button>
+        <span class="account-kicker">PIGJANO MEMBER</span>
+        <h2 id="profileTitle">나의 페이지</h2>
+        <div class="account-guest" id="profileGuest">
+          <p>카카오 로그인 후 닉네임과 훈육 기록을 관리할 수 있습니다.</p>
+          <button class="mission-login-button" id="profileLoginButton" type="button"><span class="kakao-login-mark" aria-hidden="true">K</span>카카오로 로그인하기</button>
+        </div>
+        <div class="account-member" id="profileMember" hidden>
+          <label for="nicknameInput">닉네임</label>
+          <div class="profile-name-row">
+            <input id="nicknameInput" type="text" maxlength="20" placeholder="나만의 닉네임" />
+            <button id="saveNicknameButton" type="button">저장</button>
+          </div>
+          <p class="account-status" id="profileStatus" aria-live="polite"></p>
+          <div class="mission-history-heading">
+            <h3>나의 훈육 카드</h3>
+            <span id="missionHistoryCount">0개</span>
+          </div>
+          <div class="mission-history-list" id="missionHistoryList"></div>
+          <button class="account-logout" id="profileLogoutButton" type="button">로그아웃</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="community-modal" id="communityModal" hidden aria-labelledby="communityTitle" aria-modal="true" role="dialog">
+      <div class="community-card">
+        <button class="close-button" id="closeCommunityModal" type="button" aria-label="게시판 닫기">&#215;</button>
+        <span class="account-kicker">PIGJANO COMMUNITY</span>
+        <h2 id="communityTitle">훈육 게시판</h2>
+        <p class="community-intro">다이어트 팁, 식단 기록, 다음에 보고 싶은 콘텐츠를 남겨보세요.</p>
+        <form class="community-form" id="communityForm">
+          <div class="community-form-top">
+            <select id="communityCategory" aria-label="게시글 종류">
+              <option value="diet-tip">다이어트 팁</option>
+              <option value="meal-log">식단 기록</option>
+              <option value="content-request">콘텐츠 요청</option>
+            </select>
+            <input id="communityTitleInput" type="text" maxlength="60" placeholder="제목" required />
+          </div>
+          <textarea id="communityContentInput" maxlength="500" placeholder="서로에게 도움이 되는 내용을 남겨주세요." required></textarea>
+          <button class="community-submit" id="communitySubmitButton" type="submit">로그인하고 글 남기기</button>
+          <p class="account-status" id="communityStatus" aria-live="polite"></p>
+        </form>
+        <div class="community-feed" id="communityFeed" aria-live="polite"></div>
+      </div>
+    </section>
+
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="messages.js?v=20260708-dose-300"></script>
-    <script src="script.js?v=20260713-kakao-mission-login"></script>
+    <script src="script.js?v=20260713-account-community"></script>
   </body>
 </html>
 

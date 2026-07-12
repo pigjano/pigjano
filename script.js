@@ -69,12 +69,36 @@ const missionAuthStatus = document.querySelector("#missionAuthStatus");
 const missionLoginButton = document.querySelector("#missionLoginButton");
 const missionLoginButtonText = document.querySelector("#missionLoginButtonText");
 const missionLogoutButton = document.querySelector("#missionLogoutButton");
+const profileButton = document.querySelector("#profileButton");
+const communityButton = document.querySelector("#communityButton");
+const profileModal = document.querySelector("#profileModal");
+const closeProfileModal = document.querySelector("#closeProfileModal");
+const profileGuest = document.querySelector("#profileGuest");
+const profileMember = document.querySelector("#profileMember");
+const profileLoginButton = document.querySelector("#profileLoginButton");
+const nicknameInput = document.querySelector("#nicknameInput");
+const saveNicknameButton = document.querySelector("#saveNicknameButton");
+const profileStatus = document.querySelector("#profileStatus");
+const missionHistoryCount = document.querySelector("#missionHistoryCount");
+const missionHistoryList = document.querySelector("#missionHistoryList");
+const profileLogoutButton = document.querySelector("#profileLogoutButton");
+const communityModal = document.querySelector("#communityModal");
+const closeCommunityModal = document.querySelector("#closeCommunityModal");
+const communityForm = document.querySelector("#communityForm");
+const communityCategory = document.querySelector("#communityCategory");
+const communityTitleInput = document.querySelector("#communityTitleInput");
+const communityContentInput = document.querySelector("#communityContentInput");
+const communitySubmitButton = document.querySelector("#communitySubmitButton");
+const communityStatus = document.querySelector("#communityStatus");
+const communityFeed = document.querySelector("#communityFeed");
 
 const supabaseUrl = "https://blkxiayxrjsjylmyvkvi.supabase.co";
 const supabaseAnonKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsa3hpYXl4cmpzanlsbXl2a3ZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MDY2MDYsImV4cCI6MjA5ODk4MjYwNn0.QxRg1r5N8YNqGlphMwSrMqspAWYWitI4pLv_kvlCVRA";
 const newsletterTable = "newsletter_subscribers";
 const missionTable = "discipline_missions";
+const profileTable = "user_profiles";
+const communityTable = "community_posts";
 const kakaoJavascriptKey = "3cf19f09aa012394d68342cbae1cd395";
 const siteUrl = "https://www.pigjano.com";
 const supabaseClient = window.supabase?.createClient(supabaseUrl, supabaseAnonKey);
@@ -178,6 +202,7 @@ const missionText = {
     title: "오늘의 훈육 미션",
     description: "네모난 추첨기에서 오늘 하나의 실천 미션을 받아보세요.",
     draw: "오늘의 훈육 미션 받기",
+    loginDraw: "카카오톡 로그인하고 훈육미션 받기",
     drawing: "미션 추첨 중...",
     complete: "미션 완료",
     completed: "오늘의 미션 완료",
@@ -193,6 +218,7 @@ const missionText = {
     title: "Today's Mission",
     description: "Draw one small mission for today.",
     draw: "Draw Today's Mission",
+    loginDraw: "Log in with Kakao to Draw",
     drawing: "Drawing...",
     complete: "Complete Mission",
     completed: "Mission Completed",
@@ -209,6 +235,7 @@ let activeMission = null;
 let missionIsDrawing = false;
 let pendingMissionIndex = null;
 let authUser = null;
+let profileNickname = "";
 
 const messages = {
   "1": "야 돼지야, 오늘 저녁은 가볍게 가자. 네 몸은 이미 충분히 일했다.",
@@ -794,7 +821,12 @@ async function loadCloudMission() {
     .maybeSingle();
 
   if (error) return;
-  if (!data || !Number.isInteger(data.mission_index) || !dailyMissions[data.mission_index]) return;
+  if (!data) {
+    if (activeMission?.day === getMissionDayKey()) await saveCloudMission();
+    renderDailyMission();
+    return;
+  }
+  if (!Number.isInteger(data.mission_index) || !dailyMissions[data.mission_index]) return;
 
   activeMission = {
     day: getMissionDayKey(),
@@ -836,18 +868,230 @@ async function initMissionAuth() {
   const { data } = await supabaseClient.auth.getSession();
   authUser = data.session?.user || null;
   updateMissionAuthUi();
+  updateAccountUi();
   await loadCloudMission();
   if (authUser && !activeMission) restorePendingMissionLogin();
 
   supabaseClient.auth.onAuthStateChange((_event, session) => {
     authUser = session?.user || null;
     updateMissionAuthUi();
+    updateAccountUi();
     if (authUser) {
       void loadCloudMission().then(() => {
         if (!activeMission) restorePendingMissionLogin();
       });
     }
   });
+}
+
+function setProfileStatus(message) {
+  profileStatus.textContent = message;
+}
+
+function setCommunityStatus(message) {
+  communityStatus.textContent = message;
+}
+
+function updateAccountUi() {
+  const loggedIn = Boolean(authUser);
+  profileGuest.hidden = loggedIn;
+  profileMember.hidden = !loggedIn;
+  communitySubmitButton.textContent = loggedIn ? "글 남기기" : "카카오로 로그인하고 글 남기기";
+}
+
+async function loadProfile() {
+  if (!supabaseClient || !authUser) return;
+
+  const { data, error } = await supabaseClient
+    .from(profileTable)
+    .select("nickname")
+    .eq("user_id", authUser.id)
+    .maybeSingle();
+
+  if (error) return;
+  profileNickname = data?.nickname || authUser.user_metadata?.nickname || "훈육생";
+  nicknameInput.value = profileNickname;
+}
+
+function renderMissionHistory(rows) {
+  missionHistoryList.replaceChildren();
+  missionHistoryCount.textContent = `${rows.length}개`;
+
+  if (rows.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "account-status";
+    empty.textContent = "아직 기록된 훈육 카드가 없습니다.";
+    missionHistoryList.append(empty);
+    return;
+  }
+
+  rows.forEach((row) => {
+    const card = document.createElement("article");
+    card.className = "mission-history-card";
+    const title = document.createElement("strong");
+    title.textContent = row.mission_text;
+    const stamp = document.createElement("em");
+    stamp.textContent = row.completed ? "완료" : "진행 중";
+    const date = document.createElement("span");
+    date.textContent = String(row.mission_day).replaceAll("-", ".");
+    card.append(title, stamp, date);
+    missionHistoryList.append(card);
+  });
+}
+
+async function loadMissionHistory() {
+  if (!supabaseClient || !authUser) return;
+  const { data, error } = await supabaseClient
+    .from(missionTable)
+    .select("mission_day, mission_text, completed")
+    .eq("user_id", authUser.id)
+    .order("mission_day", { ascending: false })
+    .limit(30);
+
+  if (error) {
+    missionHistoryList.textContent = "훈육 기록을 불러오지 못했습니다.";
+    return;
+  }
+  renderMissionHistory(data || []);
+}
+
+async function openProfileModal() {
+  profileModal.hidden = false;
+  updateAccountUi();
+  if (!authUser) return;
+  await Promise.all([loadProfile(), loadMissionHistory()]);
+}
+
+function closeProfile() {
+  profileModal.hidden = true;
+}
+
+async function saveNickname() {
+  const nickname = nicknameInput.value.trim();
+  if (!authUser || !nickname) {
+    setProfileStatus("닉네임을 입력해주세요.");
+    return;
+  }
+
+  saveNicknameButton.disabled = true;
+  const { error } = await supabaseClient.from(profileTable).upsert(
+    { user_id: authUser.id, nickname },
+    { onConflict: "user_id" }
+  );
+  saveNicknameButton.disabled = false;
+
+  if (error) {
+    setProfileStatus(`저장하지 못했습니다. (${error.message})`);
+    return;
+  }
+
+  profileNickname = nickname;
+  setProfileStatus("닉네임을 저장했습니다.");
+}
+
+function communityCategoryLabel(category) {
+  return {
+    "diet-tip": "다이어트 팁",
+    "meal-log": "식단 기록",
+    "content-request": "콘텐츠 요청"
+  }[category] || "훈육 이야기";
+}
+
+function formatCommunityDate(value) {
+  const date = new Date(value);
+  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function renderCommunityPosts(rows) {
+  communityFeed.replaceChildren();
+  if (rows.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "account-status";
+    empty.textContent = "첫 번째 글을 남겨보세요.";
+    communityFeed.append(empty);
+    return;
+  }
+
+  rows.forEach((row) => {
+    const post = document.createElement("article");
+    post.className = "community-post";
+    const top = document.createElement("div");
+    top.className = "community-post-top";
+    const category = document.createElement("span");
+    category.className = "community-post-category";
+    category.textContent = communityCategoryLabel(row.category);
+    const date = document.createElement("span");
+    date.className = "community-post-date";
+    date.textContent = formatCommunityDate(row.created_at);
+    top.append(category, date);
+    const title = document.createElement("h3");
+    title.textContent = row.title;
+    const content = document.createElement("p");
+    content.textContent = row.content;
+    const author = document.createElement("span");
+    author.className = "community-post-author";
+    author.textContent = row.author_name || "익명 훈육생";
+    post.append(top, title, content, author);
+    communityFeed.append(post);
+  });
+}
+
+async function loadCommunityPosts() {
+  const { data, error } = await supabaseClient
+    .from(communityTable)
+    .select("category, title, content, author_name, created_at")
+    .order("created_at", { ascending: false })
+    .limit(30);
+
+  if (error) {
+    communityFeed.textContent = "게시글을 불러오지 못했습니다. Supabase 게시판 설정을 확인해주세요.";
+    return;
+  }
+  renderCommunityPosts(data || []);
+}
+
+async function openCommunityModal() {
+  communityModal.hidden = false;
+  updateAccountUi();
+  await loadCommunityPosts();
+}
+
+function closeCommunity() {
+  communityModal.hidden = true;
+}
+
+async function submitCommunityPost(event) {
+  event.preventDefault();
+  if (!authUser) {
+    await signInWithKakao();
+    return;
+  }
+
+  const title = communityTitleInput.value.trim();
+  const content = communityContentInput.value.trim();
+  if (!title || !content) {
+    setCommunityStatus("제목과 내용을 모두 입력해주세요.");
+    return;
+  }
+
+  communitySubmitButton.disabled = true;
+  const { error } = await supabaseClient.from(communityTable).insert({
+    user_id: authUser.id,
+    category: communityCategory.value,
+    title,
+    content,
+    author_name: profileNickname || "훈육생"
+  });
+  communitySubmitButton.disabled = false;
+
+  if (error) {
+    setCommunityStatus(`글을 저장하지 못했습니다. (${error.message})`);
+    return;
+  }
+
+  communityForm.reset();
+  setCommunityStatus("게시글을 등록했습니다.");
+  await loadCommunityPosts();
 }
 
 function updateMissionLanguage() {
@@ -864,6 +1108,11 @@ function updateMissionLanguage() {
     missionDrawButtonText.textContent = text.drawing;
     return;
   }
+  if (!authUser) {
+    missionDrawButtonText.textContent = text.loginDraw;
+    missionStatus.textContent = getAuthText().guest;
+    return;
+  }
   if (!activeMission) {
     missionDrawButtonText.textContent = text.draw;
     missionStatus.textContent = text.ready;
@@ -876,6 +1125,14 @@ function updateMissionLanguage() {
 
 function renderDailyMission() {
   const text = missionText[currentLang];
+  if (!authUser) {
+    renderMissionGrid(activeMission?.index ?? null);
+    missionDrawButton.disabled = false;
+    missionCompleteButton.hidden = true;
+    missionStatus.textContent = getAuthText().guest;
+    missionDrawButtonText.textContent = text.loginDraw;
+    return;
+  }
   if (!activeMission) {
     renderMissionGrid();
     missionDrawButton.disabled = false;
@@ -894,6 +1151,10 @@ function renderDailyMission() {
 }
 
 function drawDailyMission() {
+  if (!authUser) {
+    void signInWithKakao();
+    return;
+  }
   if (missionIsDrawing || activeMission) return;
   const text = missionText[currentLang];
   missionIsDrawing = true;
@@ -1316,6 +1577,14 @@ missionCompleteButton.addEventListener("click", completeDailyMission);
 missionRecordButton.addEventListener("click", recordDailyMission);
 missionLoginButton.addEventListener("click", signInWithKakao);
 missionLogoutButton.addEventListener("click", signOutMissionAccount);
+profileButton.addEventListener("click", openProfileModal);
+communityButton.addEventListener("click", openCommunityModal);
+closeProfileModal.addEventListener("click", closeProfile);
+closeCommunityModal.addEventListener("click", closeCommunity);
+profileLoginButton.addEventListener("click", signInWithKakao);
+saveNicknameButton.addEventListener("click", saveNickname);
+profileLogoutButton.addEventListener("click", signOutMissionAccount);
+communityForm.addEventListener("submit", submitCommunityPost);
 closeMissionModal.addEventListener("click", closeMissionDraw);
 closeModal.addEventListener("click", closeResult);
 saveImageButton.addEventListener("click", saveResultImage);
@@ -1341,10 +1610,20 @@ missionModal.addEventListener("click", (event) => {
   if (event.target === missionModal) closeMissionDraw();
 });
 
+profileModal.addEventListener("click", (event) => {
+  if (event.target === profileModal) closeProfile();
+});
+
+communityModal.addEventListener("click", (event) => {
+  if (event.target === communityModal) closeCommunity();
+});
+
 window.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeResult();
   if (event.key === "Escape") closeUpdateLog();
   if (event.key === "Escape") closeMissionDraw();
+  if (event.key === "Escape") closeProfile();
+  if (event.key === "Escape") closeCommunity();
 });
 
 const params = new URLSearchParams(window.location.search);
