@@ -267,12 +267,21 @@
           <span aria-hidden="true">&#10003;</span>
           <span id="missionRecordButtonText">&#45208;&#51032; &#54984;&#50977;&#48120;&#49496;&#50640; &#44592;&#47197;&#54616;&#44592;</span>
         </button>
+        <div class="mission-auth" id="missionAuth" aria-live="polite">
+          <p id="missionAuthStatus">&#48120;&#49496; &#44592;&#47197;&#51008; &#47196;&#44536;&#51064; &#54980; &#45236; &#44228;&#51221;&#50640; &#48372;&#44288;&#46121;&#45768;&#45796;.</p>
+          <button class="mission-login-button" id="missionLoginButton" type="button">
+            <span class="kakao-login-mark" aria-hidden="true">K</span>
+            <span id="missionLoginButtonText">&#52852;&#52852;&#50724;&#47196; &#47196;&#44536;&#51064;&#54616;&#44256; &#44592;&#47197;&#54616;&#44592;</span>
+          </button>
+          <button class="mission-logout-button" id="missionLogoutButton" type="button" hidden>&#47196;&#44536;&#50500;&#50883;</button>
+        </div>
       </div>
     </section>
 
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="messages.js?v=20260708-dose-300"></script>
-    <script src="script.js?v=20260713-mission-popup"></script>
+    <script src="script.js?v=20260713-kakao-mission-login"></script>
   </body>
 </html>
 

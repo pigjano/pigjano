@@ -65,13 +65,19 @@ const missionPopupDescription = document.querySelector("#missionPopupDescription
 const missionModalKicker = document.querySelector("#missionModalKicker");
 const missionRecordButton = document.querySelector("#missionRecordButton");
 const missionRecordButtonText = document.querySelector("#missionRecordButtonText");
+const missionAuthStatus = document.querySelector("#missionAuthStatus");
+const missionLoginButton = document.querySelector("#missionLoginButton");
+const missionLoginButtonText = document.querySelector("#missionLoginButtonText");
+const missionLogoutButton = document.querySelector("#missionLogoutButton");
 
 const supabaseUrl = "https://blkxiayxrjsjylmyvkvi.supabase.co";
 const supabaseAnonKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsa3hpYXl4cmpzanlsbXl2a3ZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MDY2MDYsImV4cCI6MjA5ODk4MjYwNn0.QxRg1r5N8YNqGlphMwSrMqspAWYWitI4pLv_kvlCVRA";
 const newsletterTable = "newsletter_subscribers";
+const missionTable = "discipline_missions";
 const kakaoJavascriptKey = "3cf19f09aa012394d68342cbae1cd395";
 const siteUrl = "https://www.pigjano.com";
+const supabaseClient = window.supabase?.createClient(supabaseUrl, supabaseAnonKey);
 
 const dailyMissions = [
   "물 6잔 마시기",
@@ -142,6 +148,7 @@ const missionText = {
 let activeMission = null;
 let missionIsDrawing = false;
 let pendingMissionIndex = null;
+let authUser = null;
 
 const messages = {
   "1": "야 돼지야, 오늘 저녁은 가볍게 가자. 네 몸은 이미 충분히 일했다.",
@@ -632,6 +639,157 @@ function writeDailyMission() {
   localStorage.setItem("pigjanoDailyMission", JSON.stringify(activeMission));
 }
 
+function savePendingMissionLogin() {
+  if (pendingMissionIndex === null) return;
+  sessionStorage.setItem(
+    "pigjanoPendingMission",
+    JSON.stringify({ day: getMissionDayKey(), index: pendingMissionIndex })
+  );
+}
+
+function restorePendingMissionLogin() {
+  try {
+    const pending = JSON.parse(sessionStorage.getItem("pigjanoPendingMission"));
+    if (!pending || pending.day !== getMissionDayKey() || !dailyMissions[pending.index]) return;
+    pendingMissionIndex = pending.index;
+    sessionStorage.removeItem("pigjanoPendingMission");
+    window.setTimeout(openMissionModal, 180);
+  } catch {
+    sessionStorage.removeItem("pigjanoPendingMission");
+  }
+}
+
+function getAuthText() {
+  if (currentLang === "en") {
+    return {
+      guest: "Log in to save this mission to your account.",
+      loggedIn: "Saved to your Kakao account.",
+      login: "Log in with Kakao to Save",
+      logout: "Log out",
+      loginError: "Kakao login could not start. Please try again.",
+      saveError: "Could not save the mission record. Check the Supabase table setup."
+    };
+  }
+
+  return {
+    guest: "미션 기록은 로그인 후 내 계정에 보관됩니다.",
+    loggedIn: "카카오 계정에 훈육 기록을 저장합니다.",
+    login: "카카오로 로그인하고 기록하기",
+    logout: "로그아웃",
+    loginError: "카카오 로그인을 시작하지 못했습니다. 다시 시도해주세요.",
+    saveError: "미션 기록을 저장하지 못했습니다. Supabase 테이블 설정을 확인해주세요."
+  };
+}
+
+function updateMissionAuthUi() {
+  const text = getAuthText();
+  missionLoginButtonText.textContent = text.login;
+  missionLogoutButton.textContent = text.logout;
+
+  if (authUser) {
+    missionAuthStatus.textContent = text.loggedIn;
+    missionLoginButton.hidden = true;
+    missionLogoutButton.hidden = false;
+  } else {
+    missionAuthStatus.textContent = text.guest;
+    missionLoginButton.hidden = false;
+    missionLogoutButton.hidden = true;
+  }
+}
+
+async function signInWithKakao() {
+  const text = getAuthText();
+  if (!supabaseClient) {
+    missionAuthStatus.textContent = text.loginError;
+    return;
+  }
+
+  missionLoginButton.disabled = true;
+  savePendingMissionLogin();
+  try {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: "kakao",
+      options: { redirectTo: window.location.origin }
+    });
+    if (error) throw error;
+  } catch (error) {
+    missionAuthStatus.textContent = `${text.loginError} (${error.message})`;
+    missionLoginButton.disabled = false;
+  }
+}
+
+async function signOutMissionAccount() {
+  if (!supabaseClient) return;
+  await supabaseClient.auth.signOut();
+}
+
+async function loadCloudMission() {
+  if (!supabaseClient || !authUser) return;
+
+  const { data, error } = await supabaseClient
+    .from(missionTable)
+    .select("mission_index, completed")
+    .eq("user_id", authUser.id)
+    .eq("mission_day", getMissionDayKey())
+    .maybeSingle();
+
+  if (error) return;
+  if (!data || !Number.isInteger(data.mission_index) || !dailyMissions[data.mission_index]) return;
+
+  activeMission = {
+    day: getMissionDayKey(),
+    index: data.mission_index,
+    completed: Boolean(data.completed)
+  };
+  pendingMissionIndex = null;
+  writeDailyMission();
+  renderDailyMission();
+}
+
+async function saveCloudMission() {
+  if (!supabaseClient || !authUser || !activeMission) return true;
+
+  const { error } = await supabaseClient
+    .from(missionTable)
+    .upsert(
+      {
+        user_id: authUser.id,
+        mission_day: activeMission.day,
+        mission_index: activeMission.index,
+        mission_text: dailyMissions[activeMission.index],
+        completed: activeMission.completed
+      },
+      { onConflict: "user_id,mission_day" }
+    );
+
+  if (error) {
+    missionAuthStatus.textContent = `${getAuthText().saveError} (${error.message})`;
+    return false;
+  }
+
+  return true;
+}
+
+async function initMissionAuth() {
+  if (!supabaseClient) return;
+
+  const { data } = await supabaseClient.auth.getSession();
+  authUser = data.session?.user || null;
+  updateMissionAuthUi();
+  await loadCloudMission();
+  if (authUser && !activeMission) restorePendingMissionLogin();
+
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    authUser = session?.user || null;
+    updateMissionAuthUi();
+    if (authUser) {
+      void loadCloudMission().then(() => {
+        if (!activeMission) restorePendingMissionLogin();
+      });
+    }
+  });
+}
+
 function updateMissionLanguage() {
   const text = missionText[currentLang];
   missionKicker.textContent = text.kicker;
@@ -640,6 +798,7 @@ function updateMissionLanguage() {
   missionModalKicker.textContent = text.popupKicker;
   missionPopupDescription.textContent = text.popupDescription;
   missionRecordButtonText.textContent = text.record;
+  updateMissionAuthUi();
 
   if (missionIsDrawing) {
     missionDrawButtonText.textContent = text.drawing;
@@ -716,19 +875,27 @@ function closeMissionDraw() {
   }
 }
 
-function recordDailyMission() {
+async function recordDailyMission() {
   if (pendingMissionIndex === null || activeMission) return;
+
+  if (!authUser) {
+    await signInWithKakao();
+    return;
+  }
+
   activeMission = { day: getMissionDayKey(), index: pendingMissionIndex, completed: false };
   pendingMissionIndex = null;
   writeDailyMission();
+  await saveCloudMission();
   missionModal.hidden = true;
   renderDailyMission();
 }
 
-function completeDailyMission() {
+async function completeDailyMission() {
   if (!activeMission || activeMission.completed) return;
   activeMission.completed = true;
   writeDailyMission();
+  await saveCloudMission();
   renderDailyMission();
 }
 
@@ -1087,6 +1254,8 @@ injectButton.addEventListener("click", openResult);
 missionDrawButton.addEventListener("click", drawDailyMission);
 missionCompleteButton.addEventListener("click", completeDailyMission);
 missionRecordButton.addEventListener("click", recordDailyMission);
+missionLoginButton.addEventListener("click", signInWithKakao);
+missionLogoutButton.addEventListener("click", signOutMissionAccount);
 closeMissionModal.addEventListener("click", closeMissionDraw);
 closeModal.addEventListener("click", closeResult);
 saveImageButton.addEventListener("click", saveResultImage);
@@ -1125,6 +1294,8 @@ activeMission = readDailyMission();
 setDose(initialDose || "1");
 setLanguage(currentLang);
 renderDailyMission();
+updateMissionAuthUi();
+void initMissionAuth();
 if (isPrescription && messages[currentDose]) {
   messageBox.textContent =
     currentLang === "en"
