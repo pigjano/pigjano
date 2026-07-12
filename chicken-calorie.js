@@ -60,7 +60,6 @@ const chickenMenus = [
   ["\ub124\ub124\uce58\ud0a8", "\ud6c4\ub77c\uc774\ub4dc \ub124\uaf2c\ub2ed", "\uc21c\uc0b4", 440, 19, null, "1\uc778\ubd84 130g \uae30\uc900 \u00b7 \ucc38\uace0\uce58", "https://www.fatsecret.kr/%EC%B9%BC%EB%A1%9C%EB%A6%AC-%EC%98%81%EC%96%91%EC%86%8C/search?q=%EB%84%A4%EB%84%A4%EC%B9%98%ED%82%A8+%ED%9B%84%EB%9D%BC%EC%9D%B4%EB%93%9C%EC%B9%98%ED%82%A8", true, true],
   ["\ub124\ub124\uce58\ud0a8", "\ud6c4\ub77c\uc774\ub4dc \ub124\uaf2c\ub2ed \ub9e4\ucf64\ub9c8\uc694", "\uc21c\uc0b4", 445, 14, null, "1\uc778\ubd84 130g \uae30\uc900 \u00b7 \ucc38\uace0\uce58", "https://www.fatsecret.kr/%EC%B9%BC%EB%A1%9C%EB%A6%AC-%EC%98%81%EC%96%91%EC%86%8C/search?q=%EB%84%A4%EB%84%A4%EC%B9%98%ED%82%A8+%ED%9B%84%EB%9D%BC%EC%9D%B4%EB%93%9C%EC%B9%98%ED%82%A8", true, true]
 ].map(([brand, name, type, kcal, protein, sodium, weight, source, reference = false, total = false]) => ({ brand, name, type, kcal, protein, sodium, weight, source, reference, total }));
-
 const allLabel = "\uc804\uccb4";
 const filters = [allLabel, "\uad50\ucd0c\uce58\ud0a8", "BBQ", "BHC", "\ucc98\uac13\uc9d1", "\uad7d\ub124", "\ub124\ub124\uce58\ud0a8", "\ud478\ub77c\ub2ed", "60\uacc4\uce58\ud0a8", "\ud398\ub9ac\uce74\ub098", "\uba55\uc2dc\uce74\ub098"];
 const menuGrid = document.querySelector("#menuGrid");
@@ -71,39 +70,104 @@ const resultSummary = document.querySelector("#resultSummary");
 const emptyState = document.querySelector("#emptyState");
 const menuCount = document.querySelector("#menuCount");
 let currentBrand = allLabel;
+
 menuCount.textContent = chickenMenus.length;
 
 function formatNumber(value) {
   if (value === null || value === undefined) return "\ubbf8\uacf5\uac1c";
-  return Number.isInteger(value) ? value.toLocaleString("ko-KR") : value.toLocaleString("ko-KR", { maximumFractionDigits: 2 });
+  return Number.isInteger(value)
+    ? value.toLocaleString("ko-KR")
+    : value.toLocaleString("ko-KR", { maximumFractionDigits: 2 });
 }
-function getRunningDistance(kcal) {
-  return kcal / 60;
+
+function getWholeChickenInfo(item) {
+  if (item.type === "\uc0ac\uc774\ub4dc") {
+    return { kcal: null, label: "\ud55c \ub9c8\ub9ac \ud658\uc0b0 \uc81c\uc678" };
+  }
+  if (item.total && item.weight.includes("\ud55c \ub9c8\ub9ac")) {
+    return { kcal: item.kcal, label: "\uc81c\uacf5 \uc815\ubcf4\uc758 \ud55c \ub9c8\ub9ac \uae30\uc900" };
+  }
+  if (item.total) {
+    return { kcal: null, label: "\ud55c \ub9c8\ub9ac \uc911\ub7c9 \ubbf8\uacf5\uac1c" };
+  }
+  return {
+    kcal: Math.round(item.kcal * 8 / 10) * 10,
+    label: "\ud55c \ub9c8\ub9ac \uc57d 800g \ud658\uc0b0"
+  };
 }
-function formatRunningDistance(kcal) {
-  const distance = getRunningDistance(kcal);
-  return distance < 10 ? distance.toFixed(1) : distance.toFixed(0);
-}
+
 function renderFilters() {
-  brandFilters.innerHTML = filters.map((brand) => `<button class="brand-filter ${brand === currentBrand ? "is-active" : ""}" type="button" data-brand="${brand}">${brand}</button>`).join("");
+  brandFilters.innerHTML = filters.map((brand) => `
+    <button class="brand-filter ${brand === currentBrand ? "is-active" : ""}" type="button" data-brand="${brand}">${brand}</button>
+  `).join("");
 }
+
 function getFilteredMenus() {
   const query = menuSearch.value.trim().toLowerCase();
-  const items = chickenMenus.filter((item) => (currentBrand === allLabel || item.brand === currentBrand) && (!query || `${item.brand} ${item.name} ${item.type}`.toLowerCase().includes(query)));
+  const items = chickenMenus.filter((item) => {
+    const brandMatch = currentBrand === allLabel || item.brand === currentBrand;
+    const queryMatch = !query || `${item.brand} ${item.name} ${item.type}`.toLowerCase().includes(query);
+    return brandMatch && queryMatch;
+  });
+
   if (menuSort.value === "low") items.sort((a, b) => a.kcal - b.kcal);
   if (menuSort.value === "high") items.sort((a, b) => b.kcal - a.kcal);
   if (menuSort.value === "protein") items.sort((a, b) => (b.protein ?? -1) - (a.protein ?? -1));
   return items;
 }
+
 function renderMenus() {
   const menus = getFilteredMenus();
   const prefix = currentBrand === allLabel ? "\uc804\uccb4 \ub4f1\ub85d \uba54\ub274" : currentBrand;
-  resultSummary.textContent = `${prefix} ${menus.length}\uac1c\ub97c \ubcf4\uace0 \uc788\uc2b5\ub2c8\ub2e4. \uce74\ub4dc\ub9c8\ub2e4 100g\ub2f9 \ub610\ub294 \ud55c \ub9c8\ub9ac \uae30\uc900\uc744 \ud655\uc778\ud558\uc138\uc694.`;
+  resultSummary.textContent = `${prefix} ${menus.length}\uac1c\ub97c \ubcf4\uace0 \uc788\uc2b5\ub2c8\ub2e4. \ud55c \ub9c8\ub9ac \ud658\uc0b0 \uae30\uc900\uc740 \uce74\ub4dc\ub9c8\ub2e4 \ud655\uc778\ud558\uc138\uc694.`;
   emptyState.hidden = menus.length !== 0;
-  menuGrid.innerHTML = menus.map((item) => `<article class="menu-card"><div class="card-head"><span class="brand-tag">${item.brand}</span><span class="source-status ${item.reference ? "is-reference" : ""}">${item.reference ? "\ucc38\uace0\uce58" : "\uacf5\uc2dd \ud655\uc778"}</span></div><h2>${item.name}</h2><p class="weight">${item.type} \u00b7 ${item.weight}</p><div class="calorie-row"><strong>${formatNumber(item.kcal)}</strong><span>kcal / ${item.total ? "\ud55c \ub9c8\ub9ac" : "100g"}</span></div><div class="run-target"><span>\ub6f0\ub2e4\uba74</span><strong>${formatRunningDistance(item.kcal)}km</strong><span>\uc815\ub3c4</span></div><dl class="nutrition"><div><dt>\ub2e8\ubc31\uc9c8</dt><dd>${formatNumber(item.protein)}${item.protein === null ? "" : "g"}</dd></div><div><dt>\ub098\ud2b8\ub968</dt><dd>${formatNumber(item.sodium)}${item.sodium === null ? "" : "mg"}</dd></div></dl><div class="card-links"><a class="source-link" href="${item.source}" target="_blank" rel="noopener noreferrer">${item.reference ? "\ucc38\uace0 \ucd9c\ucc98" : "\uacf5\uc2dd \uc601\uc591\uc815\ubcf4"}</a><a class="discipline-link" href="index.html#doseGrid">\ud6c8\uc721\ubc1b\uae30</a></div></article>`).join("");
+  menuGrid.innerHTML = menus.map((item) => {
+    const whole = getWholeChickenInfo(item);
+    const hasWhole = whole.kcal !== null;
+    const displayedKcal = hasWhole ? whole.kcal : item.kcal;
+    const displayedUnit = hasWhole ? "\ud55c \ub9c8\ub9ac" : (item.total ? "\uc81c\uacf5\ub7c9" : "100g");
+    const reference = hasWhole && !item.total
+      ? `100g \uae30\uc900 ${formatNumber(item.kcal)}kcal`
+      : whole.label;
+
+    return `
+      <article class="menu-card">
+        <div class="card-head">
+          <span class="brand-tag">${item.brand}</span>
+          <span class="source-status ${item.reference ? "is-reference" : ""}">${item.reference ? "\ucc38\uace0\uce58" : "\uacf5\uc2dd \ud655\uc778"}</span>
+        </div>
+        <h2>${item.name}</h2>
+        <p class="weight">${item.type} \u00b7 ${item.weight}</p>
+        <div class="calorie-row">
+          <strong>${formatNumber(displayedKcal)}</strong>
+          <span>kcal / ${displayedUnit}</span>
+        </div>
+        <div class="whole-target">
+          <span>${hasWhole ? whole.label : "\ud55c \ub9c8\ub9ac\ub85c \uba39\uc73c\uba74"}</span>
+          <small>${reference}</small>
+        </div>
+        <dl class="nutrition">
+          <div><dt>\ub2e8\ubc31\uc9c8</dt><dd>${formatNumber(item.protein)}${item.protein === null ? "" : "g"}</dd></div>
+          <div><dt>\ub098\ud2b8\ub968</dt><dd>${formatNumber(item.sodium)}${item.sodium === null ? "" : "mg"}</dd></div>
+        </dl>
+        <div class="card-links">
+          <a class="source-link" href="${item.source}" target="_blank" rel="noopener noreferrer">${item.reference ? "\ucc38\uace0 \ucd9c\ucc98" : "\uacf5\uc2dd \uc601\uc591\uc815\ubcf4"}</a>
+          <a class="discipline-link" href="index.html#doseGrid">\ud6c8\uc721\ubc1b\uae30</a>
+        </div>
+      </article>
+    `;
+  }).join("");
 }
-brandFilters.addEventListener("click", (event) => { const button = event.target.closest("[data-brand]"); if (!button) return; currentBrand = button.dataset.brand; renderFilters(); renderMenus(); });
+
+brandFilters.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-brand]");
+  if (!button) return;
+  currentBrand = button.dataset.brand;
+  renderFilters();
+  renderMenus();
+});
 menuSearch.addEventListener("input", renderMenus);
 menuSort.addEventListener("change", renderMenus);
+
 renderFilters();
 renderMenus();
